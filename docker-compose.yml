@@ -1,0 +1,22 @@
+---
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+      - extra
+
+  extra-source:
+    build:
+      context: ./jobberwocky-extra-source
+        # dockerfile: ./jobberwocky-extra-source/Dockerfile
+    ports:
+      - "8080:8090"
+    networks:
+      - extra
+
+networks:
+  backend:
+  extra:
