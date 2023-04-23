@@ -27,3 +27,7 @@ on API usage.
 ## Sequence diagram
 
 ![sequence diagram](./docs/sequence.png)
+
+## Models diagram
+
+![models diagram](./docs/models.png)
