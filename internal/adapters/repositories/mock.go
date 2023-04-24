@@ -7,11 +7,14 @@ import (
 )
 
 type MockJobRepository struct {
-	Jobs  []domain.Job
-	Error error
+	Jobs            []domain.Job
+	Error           error
+	saveWasCalled   bool
+	filterWasCalled bool
 }
 
 func (m *MockJobRepository) Filter(pattern *domain.Filter) ([]domain.Job, error) {
+	m.filterWasCalled = true
 	if m.Error != nil {
 		return nil, m.Error
 	}
@@ -48,5 +51,14 @@ func (m *MockJobRepository) Filter(pattern *domain.Filter) ([]domain.Job, error)
 }
 
 func (m *MockJobRepository) Save(_ domain.Job) error {
+	m.saveWasCalled = true
 	return m.Error
+}
+
+func (m *MockJobRepository) SaveWasCalled() bool {
+	return m.saveWasCalled
+}
+
+func (m *MockJobRepository) FilterWasCalled() bool {
+	return m.filterWasCalled
 }
