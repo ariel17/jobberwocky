@@ -1,5 +1,10 @@
 package domain
 
+import (
+	"errors"
+	"fmt"
+)
+
 const (
 	FullTime   = "Full-Time"
 	Contractor = "Contractor"
@@ -19,6 +24,10 @@ type Job struct {
 	Keywords         []string
 }
 
+func (j Job) IsTitleValid() bool {
+	return j.Title != ""
+}
+
 // IsTypeValid checks that `Type` field only contains specific values.
 func (j Job) IsTypeValid() bool {
 	for _, t := range []string{Contractor, FullTime, PartTime} {
@@ -35,6 +44,43 @@ func (j Job) IsSalaryValid() bool {
 		return j.SalaryMax > j.SalaryMin
 	}
 	return j.SalaryMax > 0
+}
+
+// IsLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
+// that no location is remote-friendly.
+func (j Job) IsLocationAndIsRemoteFriendlyValid() bool {
+	if j.Location == "" {
+		return j.IsRemoteFriendly == true
+	}
+	return true
+}
+
+// NewJob creates a new job instance and ensures field values are valid.
+func NewJob(title, description, company, location string, salaryMin, salaryMax int, jobType string, isRemoteFriendly bool, keywords ...string) (Job, error) {
+	job := Job{
+		Title:            title,
+		Description:      description,
+		Company:          company,
+		Location:         location,
+		SalaryMin:        salaryMin,
+		SalaryMax:        salaryMax,
+		Type:             jobType,
+		IsRemoteFriendly: isRemoteFriendly,
+		Keywords:         keywords,
+	}
+	if !job.IsTitleValid() {
+		return Job{}, errors.New("title cannot be empty")
+	}
+	if !job.IsTypeValid() {
+		return Job{}, fmt.Errorf("type value is invalid: %s", jobType)
+	}
+	if !job.IsSalaryValid() {
+		return Job{}, fmt.Errorf("fixed/ranged salary is invalid: min=%d, max=%d", salaryMin, salaryMax)
+	}
+	if !job.IsLocationAndIsRemoteFriendlyValid() {
+		return Job{}, fmt.Errorf("location and remote-friendly values are incorrect: location=%s, remote friendly=%v", location, isRemoteFriendly)
+	}
+	return job, nil
 }
 
 // Filter contains value patterns to match when searching for matching jobs.
