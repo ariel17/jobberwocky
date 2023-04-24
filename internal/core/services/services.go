@@ -6,12 +6,14 @@ import (
 )
 
 type jobService struct {
-	repository ports.JobRepository
+	repository    ports.JobRepository
+	notifications ports.NotificationService
 }
 
-func NewJobService(repository ports.JobRepository) ports.JobService {
+func NewJobService(repository ports.JobRepository, notifications ports.NotificationService) ports.JobService {
 	return &jobService{
-		repository: repository,
+		repository:    repository,
+		notifications: notifications,
 	}
 }
 
@@ -20,5 +22,9 @@ func (j *jobService) Match(pattern *domain.Filter) ([]domain.Job, error) {
 }
 
 func (j *jobService) Create(job domain.Job) error {
-	return j.repository.Save(job)
+	err := j.repository.Save(job)
+	if err == nil {
+		j.notifications.Enqueue(job)
+	}
+	return err
 }
