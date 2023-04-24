@@ -25,3 +25,24 @@ func TestJob_IsTypeValid(t *testing.T) {
 		})
 	}
 }
+
+func TestJob_IsSalaryValid(t *testing.T) {
+	testCases := []struct {
+		name      string
+		salaryMin int
+		salaryMax int
+		isValid   bool
+	}{
+		{"Valid salary range", 100, 200, true},
+		{"Fixed salary", 0, 100, true},
+		{"Invalid min value", 300, 200, false},
+		{"Invalid max value", 100, 0, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			job := Job{SalaryMin: tc.salaryMin, SalaryMax: tc.salaryMax}
+			assert.Equal(t, tc.isValid, job.IsSalaryValid())
+		})
+	}
+}
