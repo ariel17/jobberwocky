@@ -7,7 +7,7 @@ type MockRepository struct {
 	Error error
 }
 
-func (m *MockRepository) Filter() ([]domain.Job, error) {
+func (m *MockRepository) Filter(pattern domain.Filter) ([]domain.Job, error) {
 	return m.Jobs, m.Error
 }
 

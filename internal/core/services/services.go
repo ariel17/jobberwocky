@@ -15,7 +15,7 @@ func NewJobService(repository ports.JobRepository) ports.JobService {
 	}
 }
 
-func (j *jobService) Match() ([]domain.Job, error) {
+func (j *jobService) Match(pattern domain.Filter) ([]domain.Job, error) {
 	return nil, nil
 }
 
