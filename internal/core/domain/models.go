@@ -13,14 +13,19 @@ type Job struct {
 	Keywords         []string
 }
 
-// Subscription contains the contact details to notify a person about a matching
-// job.
-type Subscription struct {
-	Email            string
+// Filter contains value patterns to match when searching for matching jobs.
+type Filter struct {
 	Text             string
 	Location         string
 	Salary           int
 	Type             string
 	IsRemoteFriendly bool
 	Keywords         []string
+}
+
+// Subscription contains the contact details to notify a person about a matching
+// job.
+type Subscription struct {
+	Filter
+	Email string
 }
