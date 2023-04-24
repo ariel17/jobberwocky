@@ -37,6 +37,7 @@ func TestJob_IsSalaryValid(t *testing.T) {
 		{"Fixed salary", 0, 100, true},
 		{"Invalid min value", 300, 200, false},
 		{"Invalid max value", 100, 0, false},
+		{"Invalid max and min value", 0, 0, false},
 	}
 
 	for _, tc := range testCases {
