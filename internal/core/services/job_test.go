@@ -26,17 +26,7 @@ func TestJobService_Create(t *testing.T) {
 			}
 			notification := MockNotificationService{}
 			service := NewJobService(&repository, &notification)
-			job := domain.Job{
-				Title:            "Looking for a Technical Leader",
-				Description:      "This is the longest part where we describe all the details about the job and required skills.",
-				Company:          "Ariel Labs",
-				Location:         "Argentina",
-				SalaryMin:        6000,
-				SalaryMax:        8000,
-				Type:             "Full-Time",
-				IsRemoteFriendly: true,
-				Keywords:         []string{"golang", "java", "python", "mysql"},
-			}
+			job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}
 			err := service.Create(job)
 			assert.True(t, repository.SaveWasCalled())
 			assert.Equal(t, tc.err, err)
