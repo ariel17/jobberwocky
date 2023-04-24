@@ -24,7 +24,8 @@ func TestJobService_Create(t *testing.T) {
 			repository := repositories.MockJobRepository{
 				Error: tc.err,
 			}
-			service := NewJobService(&repository)
+			notification := MockNotificationService{}
+			service := NewJobService(&repository, &notification)
 			job := domain.Job{
 				Title:            "Looking for a Technical Leader",
 				Description:      "This is the longest part where we describe all the details about the job and required skills.",
@@ -37,7 +38,11 @@ func TestJobService_Create(t *testing.T) {
 				Keywords:         []string{"golang", "java", "python", "mysql"},
 			}
 			err := service.Create(job)
+			assert.True(t, repository.SaveWasCalled())
 			assert.Equal(t, tc.err, err)
+			if err == nil {
+				assert.True(t, notification.EnqueueWasCalled())
+			}
 		})
 	}
 }
@@ -49,7 +54,7 @@ func TestJobService_Match(t *testing.T) {
 		err     error
 		matches int
 	}{
-		{"all jobs without filter", nil, nil, 1},
+		{"all jobs without filter", nil, nil, 3},
 		{"failed by repository error", nil, errors.New("mocked error"), 0},
 	}
 
@@ -58,13 +63,14 @@ func TestJobService_Match(t *testing.T) {
 			repository := repositories.MockJobRepository{
 				Error: tc.err,
 				Jobs: []domain.Job{
-					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, "Full-Time", true, []string{"golang", "java", "python", "mysql"}},
-					{"Sr Java developer", "We need you.", "IBM", "USA", 0, 8000, "Part-Time", false, []string{"java"}},
-					{"Junior Python developer", "We need more.", "Globant", "", 0, 8000, "Contract", true, []string{"java"}},
+					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, domain.FullTime, true, []string{"golang", "java", "python", "mysql"}},
+					{"Sr Java developer", "We need you.", "IBM", "USA", 0, 8000, domain.PartTime, false, []string{"java"}},
+					{"Junior Python developer", "We need more.", "Globant", "", 0, 8000, domain.Contractor, true, []string{"sql"}},
 				},
 			}
-			service := NewJobService(&repository)
+			service := NewJobService(&repository, nil)
 			jobs, err := service.Match(tc.pattern)
+			assert.True(t, repository.FilterWasCalled())
 			assert.Equal(t, tc.err, err)
 			if err == nil {
 				assert.NotNil(t, jobs)
