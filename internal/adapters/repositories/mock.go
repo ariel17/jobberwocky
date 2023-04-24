@@ -23,29 +23,19 @@ func (m *MockJobRepository) Filter(pattern *domain.Filter) ([]domain.Job, error)
 	}
 	results := []domain.Job{}
 	for _, job := range m.Jobs {
-		if (pattern.Text != "" && strings.Contains(job.Title+job.Description, pattern.Text)) ||
-			(pattern.Location != "" && pattern.Location == job.Location) ||
-			(pattern.Salary > 0 && (
+		if (pattern.Company == "" || pattern.Company == job.Company) &&
+			(pattern.Text == "" || strings.Contains(strings.ToLower(job.Title+job.Description), strings.ToLower(pattern.Text))) &&
+			(pattern.Location == "" || pattern.Location == job.Location) &&
+			(pattern.Salary == 0 || (
 				(job.SalaryMin > 0 && pattern.Salary >= job.SalaryMin && pattern.Salary <= job.SalaryMax) ||
-					(job.SalaryMin == 0 && pattern.Salary == job.SalaryMax))) ||
-			(pattern.Type != "" && pattern.Type == job.Type) ||
-			(pattern.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == job.IsRemoteFriendly) {
+					(job.SalaryMin == 0 && pattern.Salary == job.SalaryMax))) &&
+			(pattern.Type == "" || pattern.Type == job.Type) &&
+			(pattern.IsRemoteFriendly == nil || (pattern.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == job.IsRemoteFriendly)) &&
+			allKeywordsContained(pattern.Keywords, job.Keywords) {
 			results = append(results, job)
 			continue
 		}
-		for _, patternKeyword := range pattern.Keywords {
-			found := false
-			for _, jobKeyword := range job.Keywords {
-				if patternKeyword == jobKeyword {
-					found = true
-					break
-				}
-			}
-			if found {
-				results = append(results, job)
-				break
-			}
-		}
+
 	}
 	return results, m.Error
 }
@@ -61,4 +51,20 @@ func (m *MockJobRepository) SaveWasCalled() bool {
 
 func (m *MockJobRepository) FilterWasCalled() bool {
 	return m.filterWasCalled
+}
+
+func allKeywordsContained(patternKeywords, jobKeywords []string) bool {
+	for _, pk := range patternKeywords {
+		found := false
+		for _, jk := range jobKeywords {
+			if strings.ToLower(pk) == strings.ToLower(jk) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
