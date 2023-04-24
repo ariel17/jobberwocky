@@ -19,7 +19,7 @@ type Filter struct {
 	Location         string
 	Salary           int
 	Type             string
-	IsRemoteFriendly bool
+	IsRemoteFriendly *bool
 	Keywords         []string
 }
 
