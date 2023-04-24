@@ -12,5 +12,5 @@ type JobService interface {
 // NotificationService sends job alerts when its details matches subscribers'
 // patterns.
 type NotificationService interface {
-	Send(job domain.Job) error
+	Enqueue(job domain.Job)
 }
