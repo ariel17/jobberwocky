@@ -46,3 +46,24 @@ func TestJob_IsSalaryValid(t *testing.T) {
 		})
 	}
 }
+
+func TestJob_IsLocationAndRemoteFriendlyValid(t *testing.T) {
+	testCases := []struct {
+		name             string
+		location         string
+		isRemoteFriendly bool
+		isValid          bool
+	}{
+		{"With location and remote friendly", "Argentina", true, true},
+		{"With location and not remote friendly", "Argentina", false, true},
+		{"Without location and remote friendly", "", true, true},
+		{"Without location and not remote friendly", "", true, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			job := Job{Location: tc.location, IsRemoteFriendly: tc.isRemoteFriendly}
+			assert.Equal(t, tc.isValid, job.IsLocationAndIsRemoteFriendlyValid())
+		})
+	}
+}
