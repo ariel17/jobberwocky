@@ -13,4 +13,7 @@ type JobService interface {
 // patterns.
 type NotificationService interface {
 	Enqueue(job domain.Job)
+	StartWorkers()
+	StopWorkers()
+	Process()
 }

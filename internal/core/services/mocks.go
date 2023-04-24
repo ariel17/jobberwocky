@@ -13,3 +13,9 @@ func (m *MockNotificationService) Enqueue(_ domain.Job) {
 func (m *MockNotificationService) EnqueueWasCalled() bool {
 	return m.enqueueWasCalled
 }
+
+func (m *MockNotificationService) StartWorkers() {}
+
+func (m *MockNotificationService) StopWorkers() {}
+
+func (m *MockNotificationService) Process() {}
