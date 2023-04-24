@@ -8,14 +8,5 @@ type JobService interface {
 }
 
 type NotificationService interface {
-	Notify(domain.Job) error
-}
-
-type JobRepository interface {
-	Filter() ([]domain.Job, error)
-	Save(job domain.Job) error
-}
-
-type ExternalService interface {
-	Match() ([]domain.Job, error)
+	Send(domain.Job) error
 }
