@@ -15,8 +15,8 @@ func TestJobService_Create(t *testing.T) {
 		name string
 		err  error
 	}{
-		{"ok", nil},
-		{"failed", errors.New("mocked error")},
+		{"job created", nil},
+		{"failed by repository error", errors.New("mocked error")},
 	}
 
 	for _, tc := range testCases {
@@ -30,7 +30,7 @@ func TestJobService_Create(t *testing.T) {
 				Description:      "This is the longest part where we describe all the details about the job and required skills.",
 				Company:          "Ariel Labs",
 				Location:         "Argentina",
-				SalaryMin:        6000,
+				SalaryMin:        intPointer(6000),
 				SalaryMax:        8000,
 				Type:             "Full-Time",
 				IsRemoteFriendly: true,
@@ -49,8 +49,8 @@ func TestJobService_Match(t *testing.T) {
 		err     error
 		matches int
 	}{
-		{"ok", nil, nil, 1},
-		{"failed", nil, errors.New("mocked error"), 0},
+		{"all jobs without filter", nil, nil, 1},
+		{"failed by repository error", nil, errors.New("mocked error"), 0},
 	}
 
 	for _, tc := range testCases {
@@ -58,7 +58,7 @@ func TestJobService_Match(t *testing.T) {
 			repository := repositories.MockJobRepository{
 				Error: tc.err,
 				Jobs: []domain.Job{
-					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, "Full-Time", true, []string{"golang", "java", "python", "mysql"}},
+					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", intPointer(6000), 8000, "Full-Time", true, []string{"golang", "java", "python", "mysql"}},
 				},
 			}
 			service := NewJobService(&repository)
@@ -70,4 +70,9 @@ func TestJobService_Match(t *testing.T) {
 			}
 		})
 	}
+}
+
+func intPointer(value int) *int {
+	newValue := value
+	return &newValue
 }
