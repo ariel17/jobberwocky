@@ -12,21 +12,19 @@ import (
 
 func TestJobService_Create(t *testing.T) {
 	testCases := []struct {
-		name    string
-		err     error
-		success bool
+		name string
+		err  error
 	}{
-		{"ok", nil, true},
-		{"failed", errors.New("mocked error"), false},
+		{"ok", nil},
+		{"failed", errors.New("mocked error")},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			repository := repositories.MockRepository{
+			repository := repositories.MockJobRepository{
 				Error: tc.err,
 			}
 			service := NewJobService(&repository)
-
 			job := domain.Job{
 				Title:            "Looking for a Technical Leader",
 				Description:      "This is the longest part where we describe all the details about the job and required skills.",
@@ -39,7 +37,37 @@ func TestJobService_Create(t *testing.T) {
 				Keywords:         []string{"golang", "java", "python", "mysql"},
 			}
 			err := service.Create(job)
-			assert.Equal(t, tc.success, err == nil)
+			assert.Equal(t, tc.err, err)
+		})
+	}
+}
+
+func TestJobService_Match(t *testing.T) {
+	testCases := []struct {
+		name    string
+		pattern *domain.Filter
+		err     error
+		matches int
+	}{
+		{"ok", nil, nil, 1},
+		{"failed", nil, errors.New("mocked error"), 0},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			repository := repositories.MockJobRepository{
+				Error: tc.err,
+				Jobs: []domain.Job{
+					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, "Full-Time", true, []string{"golang", "java", "python", "mysql"}},
+				},
+			}
+			service := NewJobService(&repository)
+			jobs, err := service.Match(tc.pattern)
+			assert.Equal(t, tc.err, err)
+			if err == nil {
+				assert.NotNil(t, jobs)
+				assert.Equal(t, tc.matches, len(jobs))
+			}
 		})
 	}
 }
