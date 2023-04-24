@@ -22,7 +22,9 @@ func (m *MockJobRepository) Filter(pattern *domain.Filter) ([]domain.Job, error)
 	for _, job := range m.Jobs {
 		if (pattern.Text != "" && strings.Contains(job.Title+job.Description, pattern.Text)) ||
 			(pattern.Location != "" && pattern.Location == job.Location) ||
-			(pattern.Salary > 0 && pattern.Salary >= job.SalaryMin && pattern.Salary <= job.SalaryMax) ||
+			(pattern.Salary > 0 && (
+				(job.SalaryMin != nil && pattern.Salary >= *job.SalaryMin && pattern.Salary <= job.SalaryMax) ||
+					(job.SalaryMin == nil && pattern.Salary == job.SalaryMax))) ||
 			(pattern.Type != "" && pattern.Type == job.Type) ||
 			(pattern.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == job.IsRemoteFriendly) {
 			results = append(results, job)

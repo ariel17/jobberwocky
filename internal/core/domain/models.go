@@ -6,7 +6,7 @@ type Job struct {
 	Description      string
 	Company          string
 	Location         string
-	SalaryMin        int
+	SalaryMin        *int
 	SalaryMax        int
 	Type             string
 	IsRemoteFriendly bool
