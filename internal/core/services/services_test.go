@@ -54,7 +54,19 @@ func TestJobService_Match(t *testing.T) {
 		err     error
 		matches int
 	}{
-		{"all jobs without filter", nil, nil, 3},
+		{"all without filter", nil, nil, 3},
+		{"Filter by title text", &domain.Filter{Text: "technical"}, nil, 1},
+		{"Filter by description text", &domain.Filter{Text: "you"}, nil, 1},
+		{"Filter by salary in range", &domain.Filter{Salary: 7000}, nil, 1},
+		{"Filter by ranged/fixed salary", &domain.Filter{Salary: 8000}, nil, 3},
+		{"Filter by company", &domain.Filter{Company: "IBM"}, nil, 1},
+		{"Filter by location", &domain.Filter{Location: "USA"}, nil, 1},
+		{"Filter by type", &domain.Filter{Type: domain.Contractor}, nil, 1},
+		{"Filter by remote friendly", &domain.Filter{IsRemoteFriendly: boolPointer(true)}, nil, 2},
+		{"Filter by single keyword", &domain.Filter{Keywords: []string{"sql"}}, nil, 1},
+		{"Filter by multiple keywords that does not match", &domain.Filter{Keywords: []string{"sql", "java"}}, nil, 0},
+		{"Filter by multiple keywords that matches", &domain.Filter{Keywords: []string{"golang", "java"}}, nil, 1},
+		{"Filter by keywords and text", &domain.Filter{Text: "technical", Keywords: []string{"sql", "java"}}, nil, 0},
 		{"failed by repository error", nil, errors.New("mocked error"), 0},
 	}
 
@@ -78,4 +90,9 @@ func TestJobService_Match(t *testing.T) {
 			}
 		})
 	}
+}
+
+func boolPointer(v bool) *bool {
+	newValue := v
+	return &newValue
 }
