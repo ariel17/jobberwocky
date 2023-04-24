@@ -86,6 +86,7 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 // Filter contains value patterns to match when searching for matching jobs.
 type Filter struct {
 	Text             string
+	Company          string
 	Location         string
 	Salary           int
 	Type             string
