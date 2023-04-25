@@ -10,12 +10,18 @@ import (
 type jobService struct {
 	repository    ports.JobRepository
 	notifications ports.NotificationService
+	externals     []ports.ExternalJobClient
 }
 
-func NewJobService(repository ports.JobRepository, notifications ports.NotificationService) ports.JobService {
+func NewJobService(
+	repository ports.JobRepository,
+	notifications ports.NotificationService,
+	externals ...ports.ExternalJobClient) ports.JobService {
+
 	return &jobService{
 		repository:    repository,
 		notifications: notifications,
+		externals:     externals,
 	}
 }
 

@@ -13,6 +13,7 @@ import (
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
+	"github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
 func TestCreateBody(t *testing.T) {
@@ -59,7 +60,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			emailClient := clients.MockEmailProviderClient{Error: tc.emailErr}
 			repository := repositories.MockSubscriptionRepository{
-				MockFilter: repositories.MockFilter{Error: tc.repositoryErr},
+				MockFilter: internal_test.MockFilter{Error: tc.repositoryErr},
 				Subscriptions: []domain.Subscription{
 					{domain.Pattern{Text: "Title"}, "person1@example.com"},
 					{domain.Pattern{Text: "a different thing"}, "person2@example.com"},
@@ -74,7 +75,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 			service.Enqueue(tc.job)
 			time.Sleep(10 * time.Millisecond)
 
-			assert.True(t, repository.FilterWasCalled())
+			assert.True(t, repository.FilterWasCalled)
 			if tc.repositoryErr == nil {
 				assert.True(t, emailClient.SendWasCalled())
 				assert.Equal(t, tc.matches, emailClient.SendCalls())

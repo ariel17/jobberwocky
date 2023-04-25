@@ -10,6 +10,7 @@ import (
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/services/notification"
+	"github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
 func TestJobService_Create(t *testing.T) {
@@ -24,13 +25,13 @@ func TestJobService_Create(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			repository := repositories.MockJobRepository{
-				MockFilter: repositories.MockFilter{Error: tc.err},
+				MockFilter: internal_test.MockFilter{Error: tc.err},
 			}
 			notification := notification.MockNotificationService{}
 			service := NewJobService(&repository, &notification)
 			job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}
 			err := service.Create(job)
-			assert.True(t, repository.SaveWasCalled())
+			assert.True(t, repository.SaveWasCalled)
 			assert.Equal(t, tc.err, err)
 			if err == nil {
 				assert.True(t, notification.EnqueueWasCalled())
@@ -57,7 +58,7 @@ func TestJobService_Match(t *testing.T) {
 		{"pattern by company", &domain.Pattern{Company: "IBM"}, nil, nil, 1},
 		{"pattern by location", &domain.Pattern{Location: "USA"}, nil, nil, 1},
 		{"pattern by type", &domain.Pattern{Type: domain.Contractor}, nil, nil, 1},
-		{"pattern by remote friendly", &domain.Pattern{IsRemoteFriendly: boolPointer(true)}, nil, nil, 2},
+		{"pattern by remote friendly", &domain.Pattern{IsRemoteFriendly: internal_test.BoolPointer(true)}, nil, nil, 2},
 		{"pattern by single keyword", &domain.Pattern{Keywords: []string{"sql"}}, nil, nil, 1},
 		{"pattern by multiple keywords that does not match", &domain.Pattern{Keywords: []string{"sql", "java"}}, nil, nil, 0},
 		{"pattern by multiple keywords that matches", &domain.Pattern{Keywords: []string{"golang", "java"}}, nil, nil, 1},
@@ -71,7 +72,7 @@ func TestJobService_Match(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			repository := repositories.MockJobRepository{
-				MockFilter: repositories.MockFilter{
+				MockFilter: internal_test.MockFilter{
 					Error: tc.repositoryErr,
 					Jobs: []domain.Job{
 						{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, domain.FullTime, true, []string{"golang", "java", "python", "mysql"}},
@@ -81,7 +82,7 @@ func TestJobService_Match(t *testing.T) {
 				},
 			}
 			external := clients.MockExternalJobClient{
-				MockFilter: repositories.MockFilter{
+				MockFilter: internal_test.MockFilter{
 					Error: nil,
 					Jobs: []domain.Job{
 						{"External", "", "", "Argentina", 0, 8000, "", nil, []string{"sql"}},
@@ -90,7 +91,7 @@ func TestJobService_Match(t *testing.T) {
 			}
 			service := NewJobService(&repository, nil, &external)
 			jobs, err := service.Filter(tc.pattern)
-			assert.True(t, repository.FilterWasCalled())
+			assert.True(t, repository.FilterWasCalled)
 			assert.Equal(t, tc.repositoryErr, err)
 			if err == nil {
 				assert.NotNil(t, jobs)
@@ -98,9 +99,4 @@ func TestJobService_Match(t *testing.T) {
 			}
 		})
 	}
-}
-
-func boolPointer(v bool) *bool {
-	newValue := v
-	return &newValue
 }
