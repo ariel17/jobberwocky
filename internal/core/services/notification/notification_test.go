@@ -13,11 +13,11 @@ import (
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
-	"github.com/ariel17/jobberwocky/internal/internal_test"
+	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
 func TestCreateBody(t *testing.T) {
-	job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}
+	job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}
 	testCases := []struct {
 		name    string
 		file    string
@@ -51,16 +51,16 @@ func TestNotificationService_Enqueue(t *testing.T) {
 		repositoryErr error
 		emailErr      error
 	}{
-		{"matches and sends notification", domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 2, nil, nil},
+		{"matches and sends notification", domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 2, nil, nil},
 		{"failed by repository error", domain.Job{}, 0, errors.New("mocked repository error"), nil},
-		{"failed by email client error", domain.Job{"Another", "Description", "Company", "USA", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 1, nil, errors.New("mocked email error")},
+		{"failed by email client error", domain.Job{"Another", "Description", "Company", "USA", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 1, nil, errors.New("mocked email error")},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			emailClient := clients.MockEmailProviderClient{Error: tc.emailErr}
 			repository := repositories.MockSubscriptionRepository{
-				MockFilter: internal_test.MockFilter{Error: tc.repositoryErr},
+				MockFilter: helpers.MockFilter{Error: tc.repositoryErr},
 				Subscriptions: []domain.Subscription{
 					{domain.Pattern{Text: "Title"}, "person1@example.com"},
 					{domain.Pattern{Text: "a different thing"}, "person2@example.com"},
