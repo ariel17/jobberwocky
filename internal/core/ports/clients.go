@@ -2,6 +2,7 @@ package ports
 
 type ExternalJobClient interface {
 	JobFilter
+	Name() string
 }
 
 type EmailProviderClient interface {
