@@ -1,4 +1,4 @@
-package repositories
+package job
 
 import (
 	"github.com/ariel17/jobberwocky/internal/core/domain"
@@ -15,4 +15,8 @@ type MockJobRepository struct {
 func (m *MockJobRepository) Save(_ domain.Job) error {
 	m.SetSaveCalled()
 	return m.Error
+}
+
+func (m *MockJobRepository) SyncSchemas() error {
+	return nil
 }

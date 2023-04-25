@@ -26,3 +26,7 @@ func (m *MockSubscriptionRepository) Save(_ domain.Subscription) error {
 	m.SetSaveCalled()
 	return m.Error
 }
+
+func (m *MockSubscriptionRepository) SyncSchemas() error {
+	return nil
+}
