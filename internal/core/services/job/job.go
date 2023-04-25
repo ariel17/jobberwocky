@@ -19,7 +19,7 @@ func NewJobService(repository ports.JobRepository, notifications ports.Notificat
 	}
 }
 
-func (j *jobService) Match(pattern *domain.Filter) ([]domain.Job, error) {
+func (j *jobService) Filter(pattern *domain.Filter) ([]domain.Job, error) {
 	return j.repository.Filter(pattern)
 }
 

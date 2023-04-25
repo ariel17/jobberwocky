@@ -73,7 +73,7 @@ func TestJobService_Match(t *testing.T) {
 				},
 			}
 			service := NewJobService(&repository, nil)
-			jobs, err := service.Match(tc.pattern)
+			jobs, err := service.Filter(tc.pattern)
 			assert.True(t, repository.FilterWasCalled())
 			assert.Equal(t, tc.err, err)
 			if err == nil {
