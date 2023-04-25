@@ -2,6 +2,8 @@ package notification
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
@@ -14,7 +16,30 @@ import (
 )
 
 func TestCreateBody(t *testing.T) {
-
+	job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}
+	testCases := []struct {
+		name    string
+		file    string
+		success bool
+	}{
+		{"ok", configs.DefaultTemplate, true},
+		{"template not exists", "notexists.tmpl", false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			body, err := createBody(tc.file, job)
+			assert.Equal(t, tc.success, err == nil)
+			if tc.success {
+				values := []string{
+					job.Title, job.Description, job.Company, job.Location,
+					strconv.Itoa(job.SalaryMin), strconv.Itoa(job.SalaryMax),
+					job.Type, strconv.FormatBool(job.IsRemoteFriendly), fmt.Sprintf("%s", job.Keywords)}
+				for _, v := range values {
+					assert.Contains(t, body, v)
+				}
+			}
+		})
+	}
 }
 
 func TestNotificationService_Enqueue(t *testing.T) {
