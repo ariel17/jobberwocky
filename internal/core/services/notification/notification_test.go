@@ -17,7 +17,7 @@ import (
 )
 
 func TestCreateBody(t *testing.T) {
-	job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}
+	job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}
 	testCases := []struct {
 		name    string
 		file    string
@@ -34,7 +34,7 @@ func TestCreateBody(t *testing.T) {
 				values := []string{
 					job.Title, job.Description, job.Company, job.Location,
 					strconv.Itoa(job.SalaryMin), strconv.Itoa(job.SalaryMax),
-					job.Type, strconv.FormatBool(job.IsRemoteFriendly), fmt.Sprintf("%s", job.Keywords)}
+					job.Type, fmt.Sprintf("%v", *job.IsRemoteFriendly), fmt.Sprintf("%s", job.Keywords)}
 				for _, v := range values {
 					assert.Contains(t, body, v)
 				}
@@ -51,9 +51,9 @@ func TestNotificationService_Enqueue(t *testing.T) {
 		repositoryErr error
 		emailErr      error
 	}{
-		{"matches and sends notification", domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}, 2, nil, nil},
+		{"matches and sends notification", domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 2, nil, nil},
 		{"failed by repository error", domain.Job{}, 0, errors.New("mocked repository error"), nil},
-		{"failed by email client error", domain.Job{"Another", "Description", "Company", "USA", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}, 1, nil, errors.New("mocked email error")},
+		{"failed by email client error", domain.Job{"Another", "Description", "Company", "USA", 60, 80, domain.FullTime, internal_test.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 1, nil, errors.New("mocked email error")},
 	}
 
 	for _, tc := range testCases {
