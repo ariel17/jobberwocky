@@ -1,6 +1,8 @@
 package job
 
 import (
+	"log"
+
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
 )
@@ -22,9 +24,10 @@ func (j *jobService) Match(pattern *domain.Filter) ([]domain.Job, error) {
 }
 
 func (j *jobService) Create(job domain.Job) error {
-	err := j.repository.Save(job)
-	if err == nil {
-		j.notifications.Enqueue(job)
+	if err := j.repository.Save(job); err != nil {
+		return err
 	}
-	return err
+	log.Printf("New job created: %v", job)
+	j.notifications.Enqueue(job)
+	return nil
 }
