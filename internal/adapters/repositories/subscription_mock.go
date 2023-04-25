@@ -3,7 +3,8 @@ package repositories
 import "github.com/ariel17/jobberwocky/internal/core/domain"
 
 type MockSubscriptionRepository struct {
-	MockRepository
+	MockFilter
+	MockSave
 	Subscriptions []domain.Subscription
 }
 

@@ -59,7 +59,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			emailClient := clients.MockEmailProviderClient{Error: tc.emailErr}
 			repository := repositories.MockSubscriptionRepository{
-				MockRepository: repositories.MockRepository{Error: tc.repositoryErr},
+				MockFilter: repositories.MockFilter{Error: tc.repositoryErr},
 				Subscriptions: []domain.Subscription{
 					{domain.Pattern{Text: "Title"}, "person1@example.com"},
 					{domain.Pattern{Text: "a different thing"}, "person2@example.com"},

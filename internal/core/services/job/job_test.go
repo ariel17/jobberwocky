@@ -23,7 +23,7 @@ func TestJobService_Create(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			repository := repositories.MockJobRepository{
-				MockRepository: repositories.MockRepository{Error: tc.err},
+				MockFilter: repositories.MockFilter{Error: tc.err},
 			}
 			notification := notification.MockNotificationService{}
 			service := NewJobService(&repository, &notification)
@@ -65,11 +65,13 @@ func TestJobService_Match(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			repository := repositories.MockJobRepository{
-				MockRepository: repositories.MockRepository{Error: tc.err},
-				Jobs: []domain.Job{
-					{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, domain.FullTime, true, []string{"golang", "java", "python", "mysql"}},
-					{"Sr Java developer", "We need you.", "IBM", "USA", 0, 8000, domain.PartTime, false, []string{"java"}},
-					{"Junior Python developer", "We need more.", "Globant", "", 0, 8000, domain.Contractor, true, []string{"sql"}},
+				MockFilter: repositories.MockFilter{
+					Error: tc.err,
+					Jobs: []domain.Job{
+						{"Looking for a Technical Leader", "Very long description.", "Ariel Labs", "Argentina", 6000, 8000, domain.FullTime, true, []string{"golang", "java", "python", "mysql"}},
+						{"Sr Java developer", "We need you.", "IBM", "USA", 0, 8000, domain.PartTime, false, []string{"java"}},
+						{"Junior Python developer", "We need more.", "Globant", "", 0, 8000, domain.Contractor, true, []string{"sql"}},
+					},
 				},
 			}
 			service := NewJobService(&repository, nil)
