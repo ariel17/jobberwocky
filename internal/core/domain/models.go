@@ -20,8 +20,9 @@ type Job struct {
 	SalaryMin        int
 	SalaryMax        int
 	Type             string
-	IsRemoteFriendly bool
+	IsRemoteFriendly *bool
 	Keywords         []string
+	Source           string
 }
 
 func (j Job) IsTitleValid() bool {
@@ -30,12 +31,17 @@ func (j Job) IsTitleValid() bool {
 
 // IsTypeValid checks that `Type` field only contains specific values.
 func (j Job) IsTypeValid() bool {
-	for _, t := range []string{Contractor, FullTime, PartTime} {
-		if j.Type == t {
-			return true
+	if j.Source == "" {
+		for _, t := range []string{Contractor, FullTime, PartTime} {
+			if j.Type == t {
+				return true
+			}
 		}
+		return false
+	} else if j.Type != "" {
+		return false
 	}
-	return false
+	return true
 }
 
 // IsSalaryValid checks for correct ranges or fixed values to be correct.
@@ -49,14 +55,14 @@ func (j Job) IsSalaryValid() bool {
 // IsLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
 // that no location is remote-friendly.
 func (j Job) IsLocationAndIsRemoteFriendlyValid() bool {
-	if j.Location == "" {
-		return j.IsRemoteFriendly == true
+	if j.Location == "" && j.IsRemoteFriendly != nil {
+		return *j.IsRemoteFriendly == true
 	}
 	return true
 }
 
 // NewJob creates a new job instance and ensures field values are valid.
-func NewJob(title, description, company, location string, salaryMin, salaryMax int, jobType string, isRemoteFriendly bool, keywords ...string) (Job, error) {
+func NewJob(title, description, company, location string, salaryMin, salaryMax int, jobType string, isRemoteFriendly *bool, source string, keywords ...string) (Job, error) {
 	job := Job{
 		Title:            title,
 		Description:      description,
@@ -67,6 +73,7 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 		Type:             jobType,
 		IsRemoteFriendly: isRemoteFriendly,
 		Keywords:         keywords,
+		Source:           source,
 	}
 	if !job.IsTitleValid() {
 		return Job{}, errors.New("title cannot be empty")
