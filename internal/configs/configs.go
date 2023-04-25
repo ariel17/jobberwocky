@@ -12,6 +12,9 @@ const (
 	EmailSubjectKey     = "EMAIL_SUBJECT"
 	DefaultEmailSubject = "A new job alert has arrived"
 
+	EmailTemplateKey = "EMAIL_TEMPLATE"
+	DefaultTemplate  = "body.tmpl"
+
 	NotificationWorkersKey     = "NOTIFICATION_WORKERS"
 	DefaultNotificationWorkers = 10
 )
@@ -19,6 +22,7 @@ const (
 var (
 	emailFrom           = ""
 	emailSubject        = ""
+	emailTemplate       = ""
 	notificationWorkers = 0
 )
 
@@ -34,6 +38,10 @@ func GetNotificationWorkers() int {
 	return notificationWorkers
 }
 
+func GetEmailTemplate() string {
+	return emailTemplate
+}
+
 func init() {
 	emailFrom = os.Getenv(EmailFromKey)
 	if emailFrom == "" {
@@ -43,6 +51,11 @@ func init() {
 	emailSubject = os.Getenv(EmailSubjectKey)
 	if emailSubject == "" {
 		emailSubject = DefaultEmailSubject
+	}
+
+	emailTemplate = os.Getenv(EmailTemplateKey)
+	if emailTemplate == "" {
+		emailTemplate = DefaultTemplate
 	}
 
 	workers := os.Getenv(NotificationWorkersKey)
