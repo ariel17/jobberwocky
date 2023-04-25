@@ -46,6 +46,7 @@ func TestJobService_Match(t *testing.T) {
 		matches int
 	}{
 		{"all without filter", nil, nil, 3},
+		{"all with empty filter", &domain.Filter{}, nil, 3},
 		{"Filter by title text", &domain.Filter{Text: "technical"}, nil, 1},
 		{"Filter by description text", &domain.Filter{Text: "you"}, nil, 1},
 		{"Filter by salary in range", &domain.Filter{Salary: 7000}, nil, 1},
