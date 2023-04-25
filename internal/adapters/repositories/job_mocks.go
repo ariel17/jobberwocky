@@ -13,6 +13,6 @@ type MockJobRepository struct {
 }
 
 func (m *MockJobRepository) Save(_ domain.Job) error {
-	m.SaveWasCalled = true
+	m.SetSaveCalled()
 	return m.Error
 }

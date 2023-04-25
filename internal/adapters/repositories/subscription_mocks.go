@@ -2,20 +2,20 @@ package repositories
 
 import (
 	"github.com/ariel17/jobberwocky/internal/core/domain"
-	"github.com/ariel17/jobberwocky/internal/internal_test"
+	mocks "github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
 type MockSubscriptionRepository struct {
-	internal_test.MockFilter
-	internal_test.MockSave
+	mocks.MockFilter
+	mocks.MockSave
 	Subscriptions []domain.Subscription
 }
 
 func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscription, error) {
-	m.FilterWasCalled = true
+	m.SetFilterCalled()
 	results := []domain.Subscription{}
 	for _, subscription := range m.Subscriptions {
-		if internal_test.Matches(subscription.Pattern, job) {
+		if mocks.Matches(subscription.Pattern, job) {
 			results = append(results, subscription)
 		}
 	}
@@ -23,6 +23,6 @@ func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscripti
 }
 
 func (m *MockSubscriptionRepository) Save(_ domain.Subscription) error {
-	m.SaveWasCalled = true
+	m.SetSaveCalled()
 	return m.Error
 }

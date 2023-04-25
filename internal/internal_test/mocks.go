@@ -2,6 +2,7 @@ package internal_test
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
@@ -11,11 +12,15 @@ import (
 type MockFilter struct {
 	Error           error
 	Jobs            []domain.Job
-	FilterWasCalled bool
+	filterWasCalled bool
+	mutex           sync.Mutex
 }
 
 func (m *MockFilter) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
-	m.FilterWasCalled = true
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	m.filterWasCalled = true
 	if m.Error != nil {
 		return nil, m.Error
 	}
@@ -31,6 +36,22 @@ func (m *MockFilter) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 	return results, m.Error
 }
 
+func (m *MockFilter) FilterWasCalled() bool {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	return m.filterWasCalled
+}
+
+func (m *MockFilter) SetFilterCalled() {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	m.filterWasCalled = true
+}
+
+// Matches implements a basic logic to filter jobs that matches the given
+// pattern. Values are inclusive.
 func Matches(pattern domain.Pattern, job domain.Job) bool {
 	return (pattern.Company == "" || pattern.Company == job.Company) &&
 		(pattern.Text == "" || strings.Contains(strings.ToLower(job.Title+job.Description), strings.ToLower(pattern.Text))) &&
@@ -62,5 +83,20 @@ func allKeywordsContained(patternKeywords, jobKeywords []string) bool {
 // MockSave provides common fields/methods to be used on a Save() method and
 // check its usage.
 type MockSave struct {
-	SaveWasCalled bool
+	saveWasCalled bool
+	mutex         sync.Mutex
+}
+
+func (m *MockSave) SaveWasCalled() bool {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	return m.saveWasCalled
+}
+
+func (m *MockSave) SetSaveCalled() {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	m.saveWasCalled = true
 }

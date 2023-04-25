@@ -75,7 +75,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 			service.Enqueue(tc.job)
 			time.Sleep(10 * time.Millisecond)
 
-			assert.True(t, repository.FilterWasCalled)
+			assert.True(t, repository.FilterWasCalled())
 			if tc.repositoryErr == nil {
 				assert.True(t, emailClient.SendWasCalled())
 				assert.Equal(t, tc.matches, emailClient.SendCalls())

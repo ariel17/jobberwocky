@@ -31,7 +31,7 @@ func TestJobService_Create(t *testing.T) {
 			service := NewJobService(&repository, &ns)
 			job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}
 			err := service.Create(job)
-			assert.True(t, repository.SaveWasCalled)
+			assert.True(t, repository.SaveWasCalled())
 			assert.Equal(t, tc.err, err)
 			if err == nil {
 				assert.True(t, ns.EnqueueWasCalled())
@@ -89,7 +89,7 @@ func TestJobService_Match(t *testing.T) {
 			}
 			service := NewJobService(&repository, nil, &external)
 			jobs, err := service.Filter(tc.pattern)
-			assert.True(t, repository.FilterWasCalled)
+			assert.True(t, repository.FilterWasCalled())
 			if tc.repositoryErr != nil {
 				assert.Equal(t, tc.repositoryErr, err)
 			}
