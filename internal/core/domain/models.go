@@ -38,8 +38,6 @@ func (j Job) IsTypeValid() bool {
 			}
 		}
 		return false
-	} else if j.Type != "" {
-		return false
 	}
 	return true
 }
@@ -85,7 +83,7 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 		return Job{}, fmt.Errorf("fixed/ranged salary is invalid: min=%d, max=%d", salaryMin, salaryMax)
 	}
 	if !job.IsLocationAndIsRemoteFriendlyValid() {
-		return Job{}, fmt.Errorf("location and remote-friendly values are incorrect: location=%s, remote friendly=%v", location, isRemoteFriendly)
+		return Job{}, fmt.Errorf("location and remote-friendly values are incorrect: location=%s, remote friendly=%v", location, *isRemoteFriendly)
 	}
 	return job, nil
 }
