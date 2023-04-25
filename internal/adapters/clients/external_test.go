@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -41,6 +42,10 @@ func TestExternalJobClient_Filter(t *testing.T) {
 		success      bool
 	}{
 		{"all jobs without filter", nil, http.StatusOK, `[["Jr Java Developer",24000,"Argentina",["Java","OOP"]],["SSr Java Developer",34000,"Argentina",["Java","OOP","Design Patterns"]],["Sr Java Developer",44000,"Argentina",["Java","OOP","Design Patterns"]]]`, nil, 3, true},
+		{"not matching", nil, http.StatusOK, `[]`, nil, 0, true},
+		{"invalid body", nil, http.StatusOK, `{invalid`, nil, 0, false},
+		{"api error", nil, http.StatusInternalServerError, ``, nil, 0, false},
+		{"network error", nil, 0, ``, errors.New("mocked network error"), 0, false},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -51,10 +56,18 @@ func TestExternalJobClient_Filter(t *testing.T) {
 			}
 			client := NewJobberwockyExternalJobClient(&httpClient)
 			jobs, err := client.Filter(tc.pattern)
-			if tc.status == http.StatusOK {
+			if tc.success {
 				assert.NotNil(t, jobs)
 				assert.Nil(t, err)
 				assert.Equal(t, tc.expectedJobs, len(jobs))
+				for _, job := range jobs {
+					assert.NotEmpty(t, job.Title)
+					assert.Empty(t, job.Description)
+					assert.NotEmpty(t, job.Location)
+					assert.Empty(t, job.SalaryMin)
+					assert.NotEmpty(t, job.SalaryMax)
+					assert.NotEmpty(t, job.Keywords)
+				}
 			} else {
 				assert.Nil(t, jobs)
 				assert.NotNil(t, err)
