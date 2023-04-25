@@ -9,6 +9,27 @@ import (
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
 
+func TestPatternToQueryString(t *testing.T) {
+	testCases := []struct {
+		name     string
+		pattern  *domain.Pattern
+		expected string
+	}{
+		{"without pattern", nil, ""},
+		{"empty", &domain.Pattern{}, ""},
+		{"text", &domain.Pattern{Text: "text"}, "?name=text"},
+		{"location", &domain.Pattern{Location: "location"}, "?country=location"},
+		{"salary", &domain.Pattern{Salary: 10}, "?salary_min=10&salary_max=10"},
+		{"all fields", &domain.Pattern{Text: "text", Location: "location", Salary: 10}, "?name=text&country=location&salary_min=10&salary_max=10"},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			qs := patternToQueryString(tc.pattern)
+			assert.Equal(t, tc.expected, qs)
+		})
+	}
+}
+
 func TestExternalJobClient_Filter(t *testing.T) {
 	testCases := []struct {
 		name         string
@@ -28,7 +49,7 @@ func TestExternalJobClient_Filter(t *testing.T) {
 				Body:       tc.body,
 				Error:      tc.err,
 			}
-			client := NewJobberwockyExteralJobClient(&httpClient)
+			client := NewJobberwockyExternalJobClient(&httpClient)
 			jobs, err := client.Filter(tc.pattern)
 			if tc.status == http.StatusOK {
 				assert.NotNil(t, jobs)
