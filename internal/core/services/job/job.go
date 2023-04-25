@@ -1,4 +1,4 @@
-package services
+package job
 
 import (
 	"github.com/ariel17/jobberwocky/internal/core/domain"

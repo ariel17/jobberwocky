@@ -1,4 +1,4 @@
-package services
+package notification
 
 import "github.com/ariel17/jobberwocky/internal/core/domain"
 

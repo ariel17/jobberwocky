@@ -1,12 +1,19 @@
-package services
+package notification
 
 import (
+	"bytes"
 	"fmt"
 	"log"
+	"os"
+	"text/template"
 
 	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
+)
+
+const (
+	templateFileName = "body.tmpl"
 )
 
 type notificationService struct {
@@ -61,12 +68,30 @@ func (n *notificationService) Process() {
 		}
 		for _, subscription := range subscriptions {
 			subject := fmt.Sprintf("%s: %s", configs.GetEmailSubject(), job.Title)
-			// TODO generate body
-			body := ""
-			err = n.emailClient.Send(configs.GetEmailFrom(), subscription.Email, subject, body)
+			body, err := createBody(job)
 			if err != nil {
+				log.Printf("failed to create email body: %v", err)
+				continue
+			}
+			if err = n.emailClient.Send(configs.GetEmailFrom(), subscription.Email, subject, body); err != nil {
 				log.Printf("failed to send email: %v", err)
 			}
 		}
 	}
+}
+
+func createBody(job domain.Job) (string, error) {
+	templateString, err := os.ReadFile(templateFileName)
+	if err != nil {
+		return "", err
+	}
+	tmpl, err := template.New(templateFileName).Parse(string(templateString))
+	if err != nil {
+		return "", err
+	}
+	var b bytes.Buffer
+	if err := tmpl.Execute(&b, job); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }

@@ -1,4 +1,4 @@
-package services
+package job
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
+	"github.com/ariel17/jobberwocky/internal/core/services/notification"
 )
 
 func TestJobService_Create(t *testing.T) {
@@ -24,7 +25,7 @@ func TestJobService_Create(t *testing.T) {
 			repository := repositories.MockJobRepository{
 				MockRepository: repositories.MockRepository{Error: tc.err},
 			}
-			notification := MockNotificationService{}
+			notification := notification.MockNotificationService{}
 			service := NewJobService(&repository, &notification)
 			job := domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, true, []string{"k1", "k2", "k3"}}
 			err := service.Create(job)

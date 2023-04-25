@@ -1,4 +1,4 @@
-package services
+package notification
 
 import (
 	"errors"
@@ -12,6 +12,10 @@ import (
 	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
+
+func TestCreateBody(t *testing.T) {
+
+}
 
 func TestNotificationService_Enqueue(t *testing.T) {
 	testCases := []struct {
