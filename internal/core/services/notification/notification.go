@@ -12,10 +12,6 @@ import (
 	"github.com/ariel17/jobberwocky/internal/core/ports"
 )
 
-const (
-	templateFileName = "body.tmpl"
-)
-
 type notificationService struct {
 	repository  ports.SubscriptionRepository
 	emailClient ports.EmailProviderClient
@@ -68,7 +64,7 @@ func (n *notificationService) Process() {
 		}
 		for _, subscription := range subscriptions {
 			subject := fmt.Sprintf("%s: %s", configs.GetEmailSubject(), job.Title)
-			body, err := createBody(job)
+			body, err := createBody(configs.GetEmailTemplate(), job)
 			if err != nil {
 				log.Printf("failed to create email body: %v", err)
 				continue
@@ -80,12 +76,12 @@ func (n *notificationService) Process() {
 	}
 }
 
-func createBody(job domain.Job) (string, error) {
-	templateString, err := os.ReadFile(templateFileName)
+func createBody(templateFile string, job domain.Job) (string, error) {
+	templateString, err := os.ReadFile(templateFile)
 	if err != nil {
 		return "", err
 	}
-	tmpl, err := template.New(templateFileName).Parse(string(templateString))
+	tmpl, err := template.New(templateFile).Parse(string(templateString))
 	if err != nil {
 		return "", err
 	}
