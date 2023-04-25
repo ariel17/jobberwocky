@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
 func TestJob_IsTitleValid(t *testing.T) {
@@ -27,18 +29,21 @@ func TestJob_IsTitleValid(t *testing.T) {
 
 func TestJob_IsTypeValid(t *testing.T) {
 	testCases := []struct {
+		name    string
 		jobType string
+		source  string
 		isValid bool
 	}{
-		{Contractor, true},
-		{FullTime, true},
-		{PartTime, true},
-		{"other value", false},
+		{"local source and contractor", Contractor, "", true},
+		{"local source and full time", FullTime, "", true},
+		{"local source and part time", PartTime, "", true},
+		{"local source and invalid value", "other value", "", false},
+		{"external source and no type", "", "external", false},
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.jobType, func(t *testing.T) {
-			job := Job{Type: tc.jobType}
+		t.Run(tc.name, func(t *testing.T) {
+			job := Job{Type: tc.jobType, Source: tc.source}
 			assert.Equal(t, tc.isValid, job.IsTypeValid())
 		})
 	}
@@ -101,12 +106,12 @@ func TestNewJob(t *testing.T) {
 		keywords         []string
 		err              error
 	}{
-		{"expected values", "title", "description", "company", "location", 10, 20, Contractor, true, []string{"k1", "k2"}, nil},
-		{"invalid title", "", "", "", "", 0, 0, "", true, nil, errors.New("title cannot be empty")},
-		{"invalid type", "title", "", "", "", 10, 20, "other", true, nil, errors.New("type value is invalid: other")},
-		{"invalid salary range", "title", "", "", "", 20, 10, Contractor, true, nil, errors.New("fixed/ranged salary is invalid: min=20, max=10")},
-		{"invalid fixed salary", "title", "", "", "", 0, 0, FullTime, true, nil, errors.New("fixed/ranged salary is invalid: min=0, max=0")},
-		{"invalid location and no remote friendly", "title", "", "", "", 10, 20, Contractor, false, nil, errors.New("location and remote-friendly values are incorrect: location=, remote friendly=false")},
+		{"expected values", "title", "description", "company", "location", 10, 20, Contractor, internal_test.BoolPointer(true), []string{"k1", "k2"}, nil},
+		{"invalid title", "", "", "", "", 0, 0, "", internal_test.BoolPointer(true), nil, errors.New("title cannot be empty")},
+		{"invalid type", "title", "", "", "", 10, 20, "other", internal_test.BoolPointer(true), nil, errors.New("type value is invalid: other")},
+		{"invalid salary range", "title", "", "", "", 20, 10, Contractor, internal_test.BoolPointer(true), nil, errors.New("fixed/ranged salary is invalid: min=20, max=10")},
+		{"invalid fixed salary", "title", "", "", "", 0, 0, FullTime, internal_test.BoolPointer(true), nil, errors.New("fixed/ranged salary is invalid: min=0, max=0")},
+		{"invalid location and no remote friendly", "title", "", "", "", 10, 20, Contractor, internal_test.BoolPointer(false), nil, errors.New("location and remote-friendly values are incorrect: location=, remote friendly=false")},
 	}
 
 	for _, tc := range testCases {
