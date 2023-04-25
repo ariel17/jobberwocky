@@ -1,16 +1,19 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
 
 const (
-	EmailFromKey    = "EMAIL_FROM"
-	EmailSubjectKey = "EMAIL_SUBJECT"
+	EmailFromKey     = "EMAIL_FROM"
+	DefaultEmailFrom = "jobs@example.com"
 
-	NotificationWorkersKey = "NOTIFICATION_WORKERS"
+	EmailSubjectKey     = "EMAIL_SUBJECT"
+	DefaultEmailSubject = "A new job alert has arrived"
+
+	NotificationWorkersKey     = "NOTIFICATION_WORKERS"
+	DefaultNotificationWorkers = 10
 )
 
 var (
@@ -33,12 +36,19 @@ func GetNotificationWorkers() int {
 
 func init() {
 	emailFrom = os.Getenv(EmailFromKey)
+	if emailFrom == "" {
+		emailFrom = DefaultEmailFrom
+	}
+
 	emailSubject = os.Getenv(EmailSubjectKey)
+	if emailSubject == "" {
+		emailSubject = DefaultEmailSubject
+	}
 
 	workers := os.Getenv(NotificationWorkersKey)
 	var err error
 	notificationWorkers, err = strconv.Atoi(workers)
 	if err != nil {
-		panic(fmt.Errorf("notification workers cannot be parsed as int: %v", err))
+		notificationWorkers = DefaultNotificationWorkers
 	}
 }
