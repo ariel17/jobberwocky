@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
-	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/job"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/services/notification"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
@@ -24,7 +24,7 @@ func TestJobService_Create(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			repository := repositories.MockJobRepository{
+			repository := job.MockJobRepository{
 				MockFilter: helpers.MockFilter{Error: tc.err},
 			}
 			ns := notification.MockNotificationService{}
@@ -69,7 +69,7 @@ func TestJobService_Match(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			repository := repositories.MockJobRepository{
+			repository := job.MockJobRepository{
 				MockFilter: helpers.MockFilter{
 					Error: tc.repositoryErr,
 					Jobs: []domain.Job{
