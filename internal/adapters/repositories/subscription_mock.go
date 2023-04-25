@@ -11,7 +11,7 @@ func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscripti
 	m.filterWasCalled = true
 	results := []domain.Subscription{}
 	for _, subscription := range m.Subscriptions {
-		if matches(subscription.Filter, job) {
+		if matches(subscription.Pattern, job) {
 			results = append(results, subscription)
 		}
 	}

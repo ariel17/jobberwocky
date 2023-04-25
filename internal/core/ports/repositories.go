@@ -3,7 +3,7 @@ package ports
 import "github.com/ariel17/jobberwocky/internal/core/domain"
 
 type JobRepository interface {
-	Filter(pattern *domain.Filter) ([]domain.Job, error)
+	Filter(pattern *domain.Pattern) ([]domain.Job, error)
 	Save(job domain.Job) error
 }
 

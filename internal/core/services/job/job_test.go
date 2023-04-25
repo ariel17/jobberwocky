@@ -41,24 +41,24 @@ func TestJobService_Create(t *testing.T) {
 func TestJobService_Match(t *testing.T) {
 	testCases := []struct {
 		name    string
-		pattern *domain.Filter
+		pattern *domain.Pattern
 		err     error
 		matches int
 	}{
 		{"all without filter", nil, nil, 3},
-		{"all with empty filter", &domain.Filter{}, nil, 3},
-		{"Filter by title text", &domain.Filter{Text: "technical"}, nil, 1},
-		{"Filter by description text", &domain.Filter{Text: "you"}, nil, 1},
-		{"Filter by salary in range", &domain.Filter{Salary: 7000}, nil, 1},
-		{"Filter by ranged/fixed salary", &domain.Filter{Salary: 8000}, nil, 3},
-		{"Filter by company", &domain.Filter{Company: "IBM"}, nil, 1},
-		{"Filter by location", &domain.Filter{Location: "USA"}, nil, 1},
-		{"Filter by type", &domain.Filter{Type: domain.Contractor}, nil, 1},
-		{"Filter by remote friendly", &domain.Filter{IsRemoteFriendly: boolPointer(true)}, nil, 2},
-		{"Filter by single keyword", &domain.Filter{Keywords: []string{"sql"}}, nil, 1},
-		{"Filter by multiple keywords that does not match", &domain.Filter{Keywords: []string{"sql", "java"}}, nil, 0},
-		{"Filter by multiple keywords that matches", &domain.Filter{Keywords: []string{"golang", "java"}}, nil, 1},
-		{"Filter by keywords and text", &domain.Filter{Text: "technical", Keywords: []string{"sql", "java"}}, nil, 0},
+		{"all with empty filter", &domain.Pattern{}, nil, 3},
+		{"Pattern by title text", &domain.Pattern{Text: "technical"}, nil, 1},
+		{"Pattern by description text", &domain.Pattern{Text: "you"}, nil, 1},
+		{"Pattern by salary in range", &domain.Pattern{Salary: 7000}, nil, 1},
+		{"Pattern by ranged/fixed salary", &domain.Pattern{Salary: 8000}, nil, 3},
+		{"Pattern by company", &domain.Pattern{Company: "IBM"}, nil, 1},
+		{"Pattern by location", &domain.Pattern{Location: "USA"}, nil, 1},
+		{"Pattern by type", &domain.Pattern{Type: domain.Contractor}, nil, 1},
+		{"Pattern by remote friendly", &domain.Pattern{IsRemoteFriendly: boolPointer(true)}, nil, 2},
+		{"Pattern by single keyword", &domain.Pattern{Keywords: []string{"sql"}}, nil, 1},
+		{"Pattern by multiple keywords that does not match", &domain.Pattern{Keywords: []string{"sql", "java"}}, nil, 0},
+		{"Pattern by multiple keywords that matches", &domain.Pattern{Keywords: []string{"golang", "java"}}, nil, 1},
+		{"Pattern by keywords and text", &domain.Pattern{Text: "technical", Keywords: []string{"sql", "java"}}, nil, 0},
 		{"failed by repository error", nil, errors.New("mocked error"), 0},
 	}
 

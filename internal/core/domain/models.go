@@ -83,8 +83,8 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 	return job, nil
 }
 
-// Filter contains value patterns to match when searching for matching jobs.
-type Filter struct {
+// Pattern contains value patterns to match when searching for matching jobs.
+type Pattern struct {
 	Text             string
 	Company          string
 	Location         string
@@ -97,6 +97,6 @@ type Filter struct {
 // Subscription contains the contact details to notify a person about a matching
 // job.
 type Subscription struct {
-	Filter
+	Pattern
 	Email string
 }

@@ -25,7 +25,7 @@ type MockJobRepository struct {
 	Jobs []domain.Job
 }
 
-func (m *MockJobRepository) Filter(pattern *domain.Filter) ([]domain.Job, error) {
+func (m *MockJobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 	m.filterWasCalled = true
 	if m.Error != nil {
 		return nil, m.Error
@@ -48,7 +48,7 @@ func (m *MockJobRepository) Save(_ domain.Job) error {
 	return m.Error
 }
 
-func matches(pattern domain.Filter, job domain.Job) bool {
+func matches(pattern domain.Pattern, job domain.Job) bool {
 	return (pattern.Company == "" || pattern.Company == job.Company) &&
 		(pattern.Text == "" || strings.Contains(strings.ToLower(job.Title+job.Description), strings.ToLower(pattern.Text))) &&
 		(pattern.Location == "" || pattern.Location == job.Location) &&

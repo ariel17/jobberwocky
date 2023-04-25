@@ -61,10 +61,10 @@ func TestNotificationService_Enqueue(t *testing.T) {
 			repository := repositories.MockSubscriptionRepository{
 				MockRepository: repositories.MockRepository{Error: tc.repositoryErr},
 				Subscriptions: []domain.Subscription{
-					{domain.Filter{Text: "Title"}, "person1@example.com"},
-					{domain.Filter{Text: "a different thing"}, "person2@example.com"},
-					{domain.Filter{Location: "Argentina"}, "person3@example.com"},
-					{domain.Filter{Location: "USA"}, "person3@example.com"},
+					{domain.Pattern{Text: "Title"}, "person1@example.com"},
+					{domain.Pattern{Text: "a different thing"}, "person2@example.com"},
+					{domain.Pattern{Location: "Argentina"}, "person3@example.com"},
+					{domain.Pattern{Location: "USA"}, "person3@example.com"},
 				},
 			}
 			service := NewNotificationService(configs.GetNotificationWorkers(), &repository, &emailClient)
