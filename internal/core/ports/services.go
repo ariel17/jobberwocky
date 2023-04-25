@@ -2,10 +2,14 @@ package ports
 
 import "github.com/ariel17/jobberwocky/internal/core/domain"
 
+type JobFilter interface {
+	Filter(pattern *domain.Pattern) ([]domain.Job, error)
+}
+
 // JobService is responsible for storing new services and retrieve all those
 // that match a given pattern, if present.
 type JobService interface {
-	Filter(pattern *domain.Pattern) ([]domain.Job, error)
+	JobFilter
 	Create(job domain.Job) error
 }
 
