@@ -20,6 +20,16 @@ Once up and running, read the [Swagger
 documentation](http://localhost:8080/docs) for details
 on API usage.
 
+### Available environment variables
+
+```bash
+# example
+EMAIL_FROM=jobs@example.com
+EMAIL_SUBJECT=A new job alert has arrived
+EMAIL_TEMPLATE=body.tmpl
+NOTIFICATION_WORKERS=10
+```
+
 ## Architecture diagram
 
 ![architecture diagram](./docs/architecture.png)
