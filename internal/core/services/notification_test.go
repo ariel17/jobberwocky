@@ -9,6 +9,7 @@ import (
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
 
@@ -37,7 +38,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 					{domain.Filter{Location: "USA"}, "person3@example.com"},
 				},
 			}
-			service := NewNotificationService(10, &repository, &emailClient)
+			service := NewNotificationService(configs.GetNotificationWorkers(), &repository, &emailClient)
 			service.StartWorkers()
 			defer service.StopWorkers()
 
