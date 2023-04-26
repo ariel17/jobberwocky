@@ -1,4 +1,4 @@
-package repositories
+package subscription
 
 import (
 	"github.com/ariel17/jobberwocky/internal/core/domain"
