@@ -29,3 +29,18 @@ func subscriptionDomainToModel(s domain.Subscription) Subscription {
 		Keywords:         keyword.StringKeywordsToModel(s.Keywords),
 	}
 }
+
+func subscriptionModelToDomain(s Subscription) domain.Subscription {
+	return domain.Subscription{
+		Pattern: domain.Pattern{
+			Text:             s.Text,
+			Company:          s.Company,
+			Location:         s.Location,
+			Salary:           s.Salary,
+			Type:             s.Type,
+			IsRemoteFriendly: s.IsRemoteFriendly,
+			Keywords:         keyword.ModelKeywordsToString(s.Keywords),
+		},
+		Email: s.Email,
+	}
+}
