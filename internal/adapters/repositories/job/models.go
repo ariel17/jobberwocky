@@ -8,18 +8,18 @@ type Job struct {
 	ID               int64  `gorm:"primaryKey"`
 	Title            string `gorm:"size:50;not null"`
 	Description      string `gorm:"size:255"`
-	Company          string `gorm:"size:50;not null"`
-	Location         string `gorm:"size:50"`
+	Company          string `gorm:"size:50"`
+	Location         string `gorm:"size:50;not null"`
 	SalaryMin        int
 	SalaryMax        int
 	Type             string `gorm:"size:10"`
 	IsRemoteFriendly *bool
-	Keywords         []Keyword `gorm:"many2many:job_keyword;"`
+	Keywords         []Keyword `gorm:"many2many:jobs_keywords;"`
 }
 
 type Keyword struct {
 	ID    int64  `gorm:"primaryKey"`
-	Value string `gorm:"size:10"`
+	Value string `gorm:"size:10;uniqueIndex"`
 }
 
 func jobDomainToModel(job domain.Job) Job {
