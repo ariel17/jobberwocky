@@ -22,7 +22,7 @@ type Keyword struct {
 	Value string `gorm:"size:10"`
 }
 
-func jobDomainToModels(job domain.Job) Job {
+func jobDomainToModel(job domain.Job) Job {
 	km := []Keyword{}
 	for _, k := range job.Keywords {
 		km = append(km, Keyword{Value: k})
@@ -39,4 +39,12 @@ func jobDomainToModels(job domain.Job) Job {
 		Keywords:         km,
 	}
 	return jm
+}
+
+func jobModelToDomain(job Job) (domain.Job, error) {
+	keywords := []string{}
+	for _, k := range job.Keywords {
+		keywords = append(keywords, k.Value)
+	}
+	return domain.NewJob(job.Title, job.Description, job.Company, job.Location, job.SalaryMin, job.SalaryMax, job.Type, job.IsRemoteFriendly, "", keywords...)
 }
