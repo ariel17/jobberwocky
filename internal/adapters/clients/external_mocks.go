@@ -12,6 +12,10 @@ type MockExternalJobClient struct {
 	internal_test.MockFilter
 }
 
+func (m *MockExternalJobClient) Name() string {
+	return "mock"
+}
+
 type MockHTTPClient struct {
 	StatusCode int
 	Body       string
