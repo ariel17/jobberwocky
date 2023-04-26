@@ -39,7 +39,9 @@ func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
+	defer func() {
+		_ = response.Body.Close()
+	}()
 
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("api error: %d", response.StatusCode)

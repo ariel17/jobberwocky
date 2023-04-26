@@ -29,8 +29,8 @@ func TestJobService_Create(t *testing.T) {
 			}
 			ns := notification.MockNotificationService{}
 			service := NewJobService(&repository, &ns)
-			job := domain.Job{Title: "Title", Description: "Description", Company: "Company", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}
-			err := service.Create(job)
+			newJob := domain.Job{Title: "Title", Description: "Description", Company: "Company", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}
+			err := service.Create(newJob)
 			assert.True(t, repository.SaveWasCalled())
 			assert.Equal(t, tc.err, err)
 			if err == nil {

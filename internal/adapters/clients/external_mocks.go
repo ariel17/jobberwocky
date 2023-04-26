@@ -22,7 +22,7 @@ type MockHTTPClient struct {
 	Error      error
 }
 
-func (m *MockHTTPClient) Do(req *http.Request) (*http.Response, error) {
+func (m *MockHTTPClient) Do(_ *http.Request) (*http.Response, error) {
 	return &http.Response{
 		StatusCode: m.StatusCode,
 		Body:       io.NopCloser(strings.NewReader(m.Body)),
