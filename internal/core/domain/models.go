@@ -99,6 +99,12 @@ type Pattern struct {
 	Keywords         []string
 }
 
+func (p Pattern) IsEmpty() bool {
+	return p.Text == "" && p.Company == "" && p.Location == "" &&
+		p.Salary == 0 && p.Type == "" && p.IsRemoteFriendly == nil &&
+		len(p.Keywords) == 0
+}
+
 // Subscription contains the contact details to notify a person about a matching
 // job.
 type Subscription struct {
