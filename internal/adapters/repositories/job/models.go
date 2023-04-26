@@ -33,9 +33,6 @@ func jobDomainToModel(job domain.Job) Job {
 }
 
 func jobModelToDomain(job Job) (domain.Job, error) {
-	keywords := []string{}
-	for _, k := range job.Keywords {
-		keywords = append(keywords, k.Value)
-	}
+	keywords := keyword.ModelKeywordsToString(job.Keywords)
 	return domain.NewJob(job.Title, job.Description, job.Company, job.Location, job.SalaryMin, job.SalaryMax, job.Type, job.IsRemoteFriendly, "", keywords...)
 }

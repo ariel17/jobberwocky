@@ -12,3 +12,11 @@ func StringKeywordsToModel(keywords []string) []Keyword {
 	}
 	return km
 }
+
+func ModelKeywordsToString(keywords []Keyword) []string {
+	newKeywords := []string{}
+	for _, k := range keywords {
+		newKeywords = append(newKeywords, k.Value)
+	}
+	return newKeywords
+}
