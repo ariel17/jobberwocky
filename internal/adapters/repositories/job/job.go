@@ -1,6 +1,7 @@
 package job
 
 import (
+	"fmt"
 	"strings"
 
 	"gorm.io/gorm"
@@ -13,11 +14,7 @@ type jobRepository struct {
 	db *gorm.DB
 }
 
-func NewJobRepository(dialector gorm.Dialector) (ports.JobRepository, error) {
-	db, err := gorm.Open(dialector, &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
+func NewJobRepository(db *gorm.DB) (ports.JobRepository, error) {
 	return &jobRepository{
 		db: db,
 	}, nil
@@ -32,7 +29,7 @@ func (j *jobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 		query, parameters := patternToQueryAndParameters(*pattern)
 		tx = j.db.Where(query, parameters).Find(&modelJobs)
 	} else {
-		tx = j.db.Find(&modelJobs)
+		tx = j.db.Preload("Keywords").Find(&modelJobs)
 	}
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -53,7 +50,27 @@ func (j *jobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 func (j *jobRepository) Save(job domain.Job) error {
 	jm := jobDomainToModel(job)
 	tx := j.db.Create(&jm)
-	return tx.Error
+	if tx.Error != nil {
+		return tx.Error
+	}
+	needsToReplace := false
+	for index, k := range jm.Keywords {
+		if k.ID != 0 {
+			continue
+		}
+		needsToReplace = true
+		var existingKeyword Keyword
+		tx = j.db.Where("value = ?", k.Value).First(&existingKeyword)
+		if tx.Error != nil {
+			return tx.Error
+		}
+		k.ID = existingKeyword.ID
+		jm.Keywords[index] = k
+	}
+	if needsToReplace {
+		return j.db.Model(&jm).Association("Keywords").Replace(jm.Keywords)
+	}
+	return nil
 }
 
 func (j *jobRepository) SyncSchemas() error {
@@ -93,6 +110,11 @@ func patternToQueryAndParameters(pattern domain.Pattern) (string, map[string]int
 		query = append(query, "is_remote_friendly = @is_remote_friendly")
 		parameters["is_remote_friendly"] = *pattern.IsRemoteFriendly
 	}
-	// TODO keywords
+	if len(pattern.Keywords) > 0 {
+		sub := "SELECT jk.job_id AS job_id, COUNT(*) FROM jobs_keywords jk INNER JOIN keywords k ON (jk.keyword_id=k.id) WHERE k.value IN @keywords GROUP BY jk.job_id HAVING COUNT(*) = @count"
+		query = append(query, fmt.Sprintf("id IN (SELECT job_id FROM (%s))", sub))
+		parameters["count"] = len(pattern.Keywords)
+		parameters["keywords"] = pattern.Keywords
+	}
 	return strings.Join(query, " AND "), parameters
 }
