@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
-	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/subscription"
 	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
@@ -59,7 +59,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			emailClient := clients.MockEmailProviderClient{Error: tc.emailErr}
-			repository := repositories.MockSubscriptionRepository{
+			repository := subscription.MockSubscriptionRepository{
 				MockFilter: helpers.MockFilter{Error: tc.repositoryErr},
 				Subscriptions: []domain.Subscription{
 					{domain.Pattern{Text: "Title"}, "person1@example.com"},
