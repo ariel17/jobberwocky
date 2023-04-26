@@ -90,6 +90,25 @@ func TestJob_IsLocationAndRemoteFriendlyValid(t *testing.T) {
 	}
 }
 
+func TestJob_IsKeywordsValid(t *testing.T) {
+	testCases := []struct {
+		name     string
+		keywords []string
+		isValid  bool
+	}{
+		{"unique keywords", []string{"k1", "k2"}, true},
+		{"empty keywords", []string{}, true},
+		{"repeated keywords", []string{"k1", "k1"}, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			job := Job{Keywords: tc.keywords}
+			assert.Equal(t, tc.isValid, job.IsKeywordsValid())
+		})
+	}
+}
+
 func TestNewJob(t *testing.T) {
 	testCases := []struct {
 		name             string

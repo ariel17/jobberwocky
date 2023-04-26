@@ -59,6 +59,18 @@ func (j Job) IsLocationAndIsRemoteFriendlyValid() bool {
 	return true
 }
 
+// IsKeywordsValid checks for repeated values in list.
+func (j Job) IsKeywordsValid() bool {
+	for index, keyword1 := range j.Keywords {
+		for _, keyword2 := range j.Keywords[index+1:] {
+			if keyword1 == keyword2 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // NewJob creates a new job instance and ensures field values are valid.
 func NewJob(title, description, company, location string, salaryMin, salaryMax int, jobType string, isRemoteFriendly *bool, source string, keywords ...string) (Job, error) {
 	job := Job{
@@ -84,6 +96,9 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 	}
 	if !job.IsLocationAndIsRemoteFriendlyValid() {
 		return Job{}, fmt.Errorf("location and remote-friendly values are incorrect: location=%s, remote friendly=%v", location, *isRemoteFriendly)
+	}
+	if !job.IsKeywordsValid() {
+		return Job{}, errors.New("keywords needs to be unique")
 	}
 	return job, nil
 }
