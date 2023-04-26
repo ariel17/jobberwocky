@@ -24,7 +24,7 @@ func TestJobRepository_Save(t *testing.T) {
 		name string
 		job  domain.Job
 	}{
-		{"success", domain.Job{"Title", "Description", "Company", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}},
+		{"success", domain.Job{Title: "Title", Description: "Description", Company: "Company", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

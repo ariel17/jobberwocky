@@ -24,7 +24,7 @@ func TestSubscriptionRepository_Save(t *testing.T) {
 		name         string
 		subscription domain.Subscription
 	}{
-		{"success", domain.Subscription{Pattern: domain.Pattern{"Title", "Company", "Argentina", 60, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}}, Email: "arielgerardorios@gmail.com"}},
+		{"success", domain.Subscription{Pattern: domain.Pattern{Text: "Title", Company: "Company", Location: "Argentina", Salary: 60, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}, Email: "arielgerardorios@gmail.com"}},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -80,11 +80,11 @@ func TestSubscriptionRepository_Filter(t *testing.T) {
 		job      domain.Job
 		expected int
 	}{
-		{"matches by empty filter and type and keywords", domain.Job{"This is the title", "The description", "Company1", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 3},
-		{"matches by empty filter and text in title and keywords", domain.Job{"Unique title", "The description", "Company2", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 3},
-		{"matches by empty filter and text in description and keywords", domain.Job{"title1", "Wow!", "Company3", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 3},
-		{"matches by empty filter and company and type and keywords", domain.Job{"title2", "Wow!", "X", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k1", "k2", "k3"}, ""}, 4},
-		{"matches by only keywords", domain.Job{"title2", "Wow!", "X", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"k5"}, ""}, 4},
+		{"matches by empty filter and type and keywords", domain.Job{Title: "This is the title", Description: "The description", Company: "Company1", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}, 3},
+		{"matches by empty filter and text in title and keywords", domain.Job{Title: "Unique title", Description: "The description", Company: "Company2", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}, 3},
+		{"matches by empty filter and text in description and keywords", domain.Job{Title: "title1", Description: "Wow!", Company: "Company3", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}, 3},
+		{"matches by empty filter and company and type and keywords", domain.Job{Title: "title2", Description: "Wow!", Company: "X", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k1", "k2", "k3"}}, 4},
+		{"matches by only keywords", domain.Job{Title: "title2", Description: "Wow!", Company: "X", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []string{"k5"}}, 4},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
