@@ -36,7 +36,7 @@ func (j *jobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 		return nil, tx.Error
 	}
 
-	domainJobs := []domain.Job{}
+	domainJobs := make([]domain.Job, 0)
 	for _, job := range modelJobs {
 		j, err := jobModelToDomain(job)
 		if err != nil {
@@ -75,7 +75,7 @@ func (j *jobRepository) SyncSchemas() error {
 }
 
 func patternToQueryAndParameters(pattern domain.Pattern) (string, map[string]interface{}) {
-	query := []string{}
+	query := make([]string, 0)
 	parameters := make(map[string]interface{})
 	if pattern.Text != "" {
 		query = append(query, "(title LIKE @text OR description LIKE @text)")

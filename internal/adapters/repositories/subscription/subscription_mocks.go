@@ -13,7 +13,7 @@ type MockSubscriptionRepository struct {
 
 func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscription, error) {
 	m.SetFilterCalled()
-	results := []domain.Subscription{}
+	results := make([]domain.Subscription, 0)
 	for _, subscription := range m.Subscriptions {
 		if mocks.Matches(subscription.Pattern, job) {
 			results = append(results, subscription)

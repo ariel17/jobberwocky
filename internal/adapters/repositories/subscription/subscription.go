@@ -29,7 +29,7 @@ func (s *subscriptionRepository) Filter(job domain.Job) ([]domain.Subscription, 
 		return nil, tx.Error
 	}
 
-	domainSubscriptions := []domain.Subscription{}
+	domainSubscriptions := make([]domain.Subscription, 0)
 	for _, subscription := range modelSubscriptions {
 		s := subscriptionModelToDomain(subscription)
 		domainSubscriptions = append(domainSubscriptions, s)
@@ -64,7 +64,7 @@ func (s *subscriptionRepository) SyncSchemas() error {
 }
 
 func jobToQueryAndParameters(job domain.Job) (string, map[string]interface{}) {
-	query := []string{}
+	query := make([]string, 0)
 	parameters := make(map[string]interface{})
 
 	query = append(query, "(text = '' OR INSTR(@title, text) > 0 OR INSTR(@description, text) > 0)")

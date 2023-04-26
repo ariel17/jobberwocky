@@ -25,7 +25,7 @@ func (k *keywordRepository) SyncSchemas() error {
 
 func ReuseExistingKeywords(db *gorm.DB, oldKeywords []Keyword) (bool, []Keyword, error) {
 	needsReplacement := false
-	newKeywords := []Keyword{}
+	newKeywords := make([]Keyword, 0)
 	for _, k := range oldKeywords {
 		if k.ID != 0 {
 			newKeywords = append(newKeywords, k)

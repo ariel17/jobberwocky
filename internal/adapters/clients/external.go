@@ -54,12 +54,12 @@ func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain
 		return nil, fmt.Errorf("invalid body: %s", body)
 	}
 
-	jobs := []domain.Job{}
+	jobs := make([]domain.Job, 0)
 	for _, rawJob := range rawJobs {
 		title := rawJob[0].(string)
 		location := rawJob[2].(string)
 		salaryMax := int(rawJob[1].(float64))
-		keywords := []string{}
+		keywords := make([]string, 0)
 		for _, k := range rawJob[3].([]interface{}) {
 			keywords = append(keywords, k.(string))
 		}
@@ -80,7 +80,7 @@ func patternToQueryString(pattern *domain.Pattern) string {
 	if pattern == nil {
 		return ""
 	}
-	fields := []string{}
+	fields := make([]string, 0)
 	if pattern.Text != "" {
 		fields = append(fields, "name="+pattern.Text)
 	}

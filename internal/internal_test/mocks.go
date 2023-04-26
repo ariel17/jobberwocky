@@ -27,7 +27,7 @@ func (m *MockFilter) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 	if pattern == nil {
 		return m.Jobs, m.Error
 	}
-	results := []domain.Job{}
+	results := make([]domain.Job, 0)
 	for _, job := range m.Jobs {
 		if Matches(*pattern, job) {
 			results = append(results, job)

@@ -6,7 +6,7 @@ type Keyword struct {
 }
 
 func StringKeywordsToModel(keywords []string) []Keyword {
-	km := []Keyword{}
+	km := make([]Keyword, 0)
 	for _, k := range keywords {
 		km = append(km, Keyword{Value: k})
 	}
@@ -14,7 +14,7 @@ func StringKeywordsToModel(keywords []string) []Keyword {
 }
 
 func ModelKeywordsToString(keywords []Keyword) []string {
-	newKeywords := []string{}
+	newKeywords := make([]string, 0)
 	for _, k := range keywords {
 		newKeywords = append(newKeywords, k.Value)
 	}

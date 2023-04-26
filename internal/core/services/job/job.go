@@ -52,7 +52,7 @@ func (j *jobService) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 		return nil, lastErr
 	}
 
-	results := []domain.Job{}
+	results := make([]domain.Job, 0)
 	for jobs := range jobsOutput {
 		results = append(results, jobs...)
 	}
