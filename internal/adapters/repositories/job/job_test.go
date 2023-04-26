@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
@@ -26,10 +27,13 @@ func TestJobRepository_Save(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-
 			_ = os.Remove(dbName)
-			dialector := sqlite.Open(dbName)
-			repository, err := NewJobRepository(dialector)
+			db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{
+				Logger: logger.Default.LogMode(logger.Info),
+			})
+			assert.Nil(t, err)
+
+			repository, err := NewJobRepository(db)
 			assert.Nil(t, err)
 
 			err = repository.SyncSchemas()
@@ -38,7 +42,6 @@ func TestJobRepository_Save(t *testing.T) {
 			err = repository.Save(tc.job)
 			assert.Nil(t, err)
 
-			db, _ := gorm.Open(dialector, &gorm.Config{})
 			var job Job
 			db.First(&job, 1)
 			assert.Equal(t, job.Title, tc.job.Title)
@@ -64,10 +67,10 @@ func TestJobRepository_Save(t *testing.T) {
 }
 
 func TestJobRepository_Filter(t *testing.T) {
-	modelJobs := []Job{
-		{Title: "Title", Description: "Description", Company: "Company1", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "golang"}}},
-		{Title: "Another", Description: "Value", Company: "Company2", Location: "USA", SalaryMin: 0, SalaryMax: 90, Type: domain.Contractor, IsRemoteFriendly: helpers.BoolPointer(false), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "kotlin"}}},
-		{Title: "X", Description: "", Company: "SpaceX", Location: "USA", SalaryMin: 900, SalaryMax: 1000, Type: domain.Contractor, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "kotlin"}}},
+	jobs := []domain.Job{
+		{"Title", "Description", "Company1", "Argentina", 60, 80, domain.FullTime, helpers.BoolPointer(true), []string{"java", "python", "golang"}, ""},
+		{"Another", "Value", "Company2", "USA", 0, 90, domain.Contractor, helpers.BoolPointer(false), []string{"java", "python", "kotlin"}, ""},
+		{"X", "", "SpaceX", "USA", 900, 1000, domain.Contractor, helpers.BoolPointer(true), []string{"java", "python", "php"}, ""},
 	}
 	testCases := []struct {
 		name     string
@@ -85,22 +88,28 @@ func TestJobRepository_Filter(t *testing.T) {
 		{"filter by is remote friendly", &domain.Pattern{IsRemoteFriendly: helpers.BoolPointer(true)}, 2},
 		{"filter by is remote friendly and company", &domain.Pattern{Company: "SpaceX", IsRemoteFriendly: helpers.BoolPointer(true)}, 1},
 		{"not matching", &domain.Pattern{Location: "Argentina", Type: domain.Contractor}, 0},
-		// TODO filter by keywords
+		{"filter by single keyword", &domain.Pattern{Keywords: []string{"python"}}, 3},
+		{"filter by multiple keywords", &domain.Pattern{Keywords: []string{"python", "golang"}}, 1},
+		{"not matching by multiple keywords", &domain.Pattern{Keywords: []string{"python", "golang", "xxx"}}, 0},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			_ = os.Remove(dbName)
-			dialector := sqlite.Open(dbName)
+			db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{
+				Logger: logger.Default.LogMode(logger.Info),
+			})
+			assert.Nil(t, err)
 
-			repository, err := NewJobRepository(dialector)
+			repository, err := NewJobRepository(db)
 			assert.Nil(t, err)
 
 			err = repository.SyncSchemas()
 			assert.Nil(t, err)
 
-			db, _ := gorm.Open(dialector, &gorm.Config{})
-			tx := db.Create(modelJobs)
-			assert.Nil(t, tx.Error)
+			for _, job := range jobs {
+				err = repository.Save(job)
+				assert.Nil(t, err)
+			}
 
 			jobs, err := repository.Filter(tc.pattern)
 			assert.Nil(t, err)
