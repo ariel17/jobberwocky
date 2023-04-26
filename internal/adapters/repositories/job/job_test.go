@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	dbName = "test.db"
+	dbName = "job.db"
 )
 
 func TestJobRepository_Save(t *testing.T) {
