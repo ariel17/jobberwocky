@@ -64,27 +64,31 @@ func TestJobRepository_Save(t *testing.T) {
 }
 
 func TestJobRepository_Filter(t *testing.T) {
+	modelJobs := []Job{
+		{Title: "Title", Description: "Description", Company: "Company1", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "golang"}}},
+		{Title: "Another", Description: "Value", Company: "Company2", Location: "USA", SalaryMin: 0, SalaryMax: 90, Type: domain.Contractor, IsRemoteFriendly: helpers.BoolPointer(false), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "kotlin"}}},
+		{Title: "X", Description: "", Company: "SpaceX", Location: "USA", SalaryMin: 900, SalaryMax: 1000, Type: domain.Contractor, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "kotlin"}}},
+	}
 	testCases := []struct {
 		name     string
 		pattern  *domain.Pattern
-		jobs     []Job
 		expected int
-		success  bool
 	}{
-		{
-			"all jobs without filter",
-			nil,
-			[]Job{
-				{Title: "Title", Description: "Description", Company: "Company1", Location: "Argentina", SalaryMin: 60, SalaryMax: 80, Type: domain.FullTime, IsRemoteFriendly: helpers.BoolPointer(true), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "golang"}}},
-				{Title: "Another", Description: "Value", Company: "Company2", Location: "USA", SalaryMin: 0, SalaryMax: 80, Type: domain.Contractor, IsRemoteFriendly: helpers.BoolPointer(false), Keywords: []Keyword{{Value: "java"}, {Value: "python"}, {Value: "kotlin"}}},
-			},
-			2,
-			true,
-		},
+		{"all jobs without filter", nil, 3},
+		{"all jobs with empty filter", &domain.Pattern{}, 3},
+		{"filter by text", &domain.Pattern{Text: "title"}, 1},
+		{"filter by company", &domain.Pattern{Company: "Company1"}, 1},
+		{"filter by location", &domain.Pattern{Location: "Argentina"}, 1},
+		{"filter by fixed salary", &domain.Pattern{Salary: 90}, 1},
+		{"filter by ranged salary", &domain.Pattern{Salary: 70}, 1},
+		{"filter by type", &domain.Pattern{Type: domain.Contractor}, 2},
+		{"filter by is remote friendly", &domain.Pattern{IsRemoteFriendly: helpers.BoolPointer(true)}, 2},
+		{"filter by is remote friendly and company", &domain.Pattern{Company: "SpaceX", IsRemoteFriendly: helpers.BoolPointer(true)}, 1},
+		{"not matching", &domain.Pattern{Location: "Argentina", Type: domain.Contractor}, 0},
+		// TODO filter by keywords
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-
 			_ = os.Remove(dbName)
 			dialector := sqlite.Open(dbName)
 
@@ -95,7 +99,7 @@ func TestJobRepository_Filter(t *testing.T) {
 			assert.Nil(t, err)
 
 			db, _ := gorm.Open(dialector, &gorm.Config{})
-			tx := db.Create(tc.jobs)
+			tx := db.Create(modelJobs)
 			assert.Nil(t, tx.Error)
 
 			jobs, err := repository.Filter(tc.pattern)
