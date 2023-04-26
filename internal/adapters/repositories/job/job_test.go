@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/keyword"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
 
@@ -33,11 +34,11 @@ func TestJobRepository_Save(t *testing.T) {
 			})
 			assert.Nil(t, err)
 
-			repository, err := NewJobRepository(db)
-			assert.Nil(t, err)
+			keywordRepository := keyword.NewKeywordRepository(db)
+			assert.Nil(t, keywordRepository.SyncSchemas())
 
-			err = repository.SyncSchemas()
-			assert.Nil(t, err)
+			repository := NewJobRepository(db)
+			assert.Nil(t, repository.SyncSchemas())
 
 			err = repository.Save(tc.job)
 			assert.Nil(t, err)
@@ -100,11 +101,11 @@ func TestJobRepository_Filter(t *testing.T) {
 			})
 			assert.Nil(t, err)
 
-			repository, err := NewJobRepository(db)
-			assert.Nil(t, err)
+			keywordRepository := keyword.NewKeywordRepository(db)
+			assert.Nil(t, keywordRepository.SyncSchemas())
 
-			err = repository.SyncSchemas()
-			assert.Nil(t, err)
+			repository := NewJobRepository(db)
+			assert.Nil(t, repository.SyncSchemas())
 
 			for _, job := range jobs {
 				err = repository.Save(job)

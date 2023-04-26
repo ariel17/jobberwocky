@@ -1,7 +1,7 @@
 package subscription
 
 import (
-	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/keyword"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
 
@@ -14,7 +14,7 @@ type Subscription struct {
 	Salary           int
 	Type             string `gorm:"size:10"`
 	IsRemoteFriendly *bool
-	Keywords         []repositories.Keyword `gorm:"many2many:subscriptions_keywords;"`
+	Keywords         []keyword.Keyword `gorm:"many2many:subscriptions_keywords;"`
 }
 
 func subscriptionDomainToModel(s domain.Subscription) Subscription {
@@ -26,6 +26,6 @@ func subscriptionDomainToModel(s domain.Subscription) Subscription {
 		Salary:           s.Salary,
 		Type:             s.Type,
 		IsRemoteFriendly: s.IsRemoteFriendly,
-		Keywords:         repositories.StringKeywordsToModel(s.Keywords),
+		Keywords:         keyword.StringKeywordsToModel(s.Keywords),
 	}
 }

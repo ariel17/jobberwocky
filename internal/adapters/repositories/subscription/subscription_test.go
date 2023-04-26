@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/keyword"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
 )
@@ -32,11 +33,11 @@ func TestSubscriptionRepository_Save(t *testing.T) {
 			})
 			assert.Nil(t, err)
 
-			repository, err := NewSubscriptionRepository(db)
-			assert.Nil(t, err)
+			keywordRepository := keyword.NewKeywordRepository(db)
+			assert.Nil(t, keywordRepository.SyncSchemas())
 
-			err = repository.SyncSchemas()
-			assert.Nil(t, err)
+			repository := NewSubscriptionRepository(db)
+			assert.Nil(t, repository.SyncSchemas())
 
 			err = repository.Save(tc.subscription)
 			assert.Nil(t, err)

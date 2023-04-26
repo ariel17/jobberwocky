@@ -1,6 +1,27 @@
-package repositories
+package keyword
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+
+	"github.com/ariel17/jobberwocky/internal/core/ports"
+)
+
+type keywordRepository struct {
+	db *gorm.DB
+}
+
+func NewKeywordRepository(db *gorm.DB) ports.Repository {
+	return &keywordRepository{
+		db: db,
+	}
+}
+
+func (k *keywordRepository) SyncSchemas() error {
+	if err := k.db.AutoMigrate(&Keyword{}); err != nil {
+		return err
+	}
+	return nil
+}
 
 func ReuseExistingKeywords(db *gorm.DB, oldKeywords []Keyword) (bool, []Keyword, error) {
 	needsReplacement := false

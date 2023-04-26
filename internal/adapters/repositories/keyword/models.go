@@ -1,4 +1,4 @@
-package repositories
+package keyword
 
 type Keyword struct {
 	ID    int64  `gorm:"primaryKey"`

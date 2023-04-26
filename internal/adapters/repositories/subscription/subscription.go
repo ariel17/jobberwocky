@@ -3,7 +3,7 @@ package subscription
 import (
 	"gorm.io/gorm"
 
-	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/keyword"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
 )
@@ -12,10 +12,10 @@ type subscriptionRepository struct {
 	db *gorm.DB
 }
 
-func NewSubscriptionRepository(db *gorm.DB) (ports.SubscriptionRepository, error) {
+func NewSubscriptionRepository(db *gorm.DB) ports.SubscriptionRepository {
 	return &subscriptionRepository{
 		db: db,
-	}, nil
+	}
 }
 
 func (s *subscriptionRepository) Filter(job domain.Job) ([]domain.Subscription, error) {
@@ -27,7 +27,7 @@ func (s *subscriptionRepository) Save(subscription domain.Subscription) error {
 	if tx.Error != nil {
 		return tx.Error
 	}
-	needsReplacement, newKeywords, err := repositories.ReuseExistingKeywords(s.db, sm.Keywords)
+	needsReplacement, newKeywords, err := keyword.ReuseExistingKeywords(s.db, sm.Keywords)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func (s *subscriptionRepository) SyncSchemas() error {
 	if err := s.db.AutoMigrate(&Subscription{}); err != nil {
 		return err
 	}
-	if err := s.db.AutoMigrate(&repositories.Keyword{}); err != nil {
+	if err := s.db.AutoMigrate(&keyword.Keyword{}); err != nil {
 		return err
 	}
 	return nil

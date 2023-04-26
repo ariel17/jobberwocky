@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories/keyword"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
 )
@@ -15,10 +15,10 @@ type jobRepository struct {
 	db *gorm.DB
 }
 
-func NewJobRepository(db *gorm.DB) (ports.JobRepository, error) {
+func NewJobRepository(db *gorm.DB) ports.JobRepository {
 	return &jobRepository{
 		db: db,
-	}, nil
+	}
 }
 
 func (j *jobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
@@ -54,7 +54,7 @@ func (j *jobRepository) Save(job domain.Job) error {
 	if tx.Error != nil {
 		return tx.Error
 	}
-	needsReplacement, newKeywords, err := repositories.ReuseExistingKeywords(j.db, jm.Keywords)
+	needsReplacement, newKeywords, err := keyword.ReuseExistingKeywords(j.db, jm.Keywords)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (j *jobRepository) SyncSchemas() error {
 	if err := j.db.AutoMigrate(&Job{}); err != nil {
 		return err
 	}
-	if err := j.db.AutoMigrate(&repositories.Keyword{}); err != nil {
+	if err := j.db.AutoMigrate(&keyword.Keyword{}); err != nil {
 		return err
 	}
 	return nil
