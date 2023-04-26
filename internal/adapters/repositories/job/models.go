@@ -1,6 +1,7 @@
 package job
 
 import (
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 )
 
@@ -14,18 +15,13 @@ type Job struct {
 	SalaryMax        int
 	Type             string `gorm:"size:10"`
 	IsRemoteFriendly *bool
-	Keywords         []Keyword `gorm:"many2many:jobs_keywords;"`
-}
-
-type Keyword struct {
-	ID    int64  `gorm:"primaryKey"`
-	Value string `gorm:"size:10;uniqueIndex"`
+	Keywords         []repositories.Keyword `gorm:"many2many:jobs_keywords;"`
 }
 
 func jobDomainToModel(job domain.Job) Job {
-	km := []Keyword{}
+	km := []repositories.Keyword{}
 	for _, k := range job.Keywords {
-		km = append(km, Keyword{Value: k})
+		km = append(km, repositories.Keyword{Value: k})
 	}
 	jm := Job{
 		Title:            job.Title,

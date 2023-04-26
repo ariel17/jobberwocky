@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"github.com/ariel17/jobberwocky/internal/adapters/repositories"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
 )
@@ -59,7 +60,7 @@ func (j *jobRepository) Save(job domain.Job) error {
 			continue
 		}
 		needsToReplace = true
-		var existingKeyword Keyword
+		var existingKeyword repositories.Keyword
 		tx = j.db.Where("value = ?", k.Value).First(&existingKeyword)
 		if tx.Error != nil {
 			return tx.Error
@@ -77,7 +78,7 @@ func (j *jobRepository) SyncSchemas() error {
 	if err := j.db.AutoMigrate(&Job{}); err != nil {
 		return err
 	}
-	if err := j.db.AutoMigrate(&Keyword{}); err != nil {
+	if err := j.db.AutoMigrate(&repositories.Keyword{}); err != nil {
 		return err
 	}
 	return nil
