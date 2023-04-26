@@ -54,22 +54,12 @@ func (j *jobRepository) Save(job domain.Job) error {
 	if tx.Error != nil {
 		return tx.Error
 	}
-	needsToReplace := false
-	for index, k := range jm.Keywords {
-		if k.ID != 0 {
-			continue
-		}
-		needsToReplace = true
-		var existingKeyword repositories.Keyword
-		tx = j.db.Where("value = ?", k.Value).First(&existingKeyword)
-		if tx.Error != nil {
-			return tx.Error
-		}
-		k.ID = existingKeyword.ID
-		jm.Keywords[index] = k
+	needsReplacement, newKeywords, err := repositories.ReuseExistingKeywords(j.db, jm.Keywords)
+	if err != nil {
+		return err
 	}
-	if needsToReplace {
-		return j.db.Model(&jm).Association("Keywords").Replace(jm.Keywords)
+	if needsReplacement {
+		return j.db.Model(&jm).Association("Keywords").Replace(newKeywords)
 	}
 	return nil
 }

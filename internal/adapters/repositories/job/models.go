@@ -19,11 +19,7 @@ type Job struct {
 }
 
 func jobDomainToModel(job domain.Job) Job {
-	km := []repositories.Keyword{}
-	for _, k := range job.Keywords {
-		km = append(km, repositories.Keyword{Value: k})
-	}
-	jm := Job{
+	return Job{
 		Title:            job.Title,
 		Description:      job.Description,
 		Company:          job.Company,
@@ -32,9 +28,8 @@ func jobDomainToModel(job domain.Job) Job {
 		SalaryMax:        job.SalaryMax,
 		Type:             job.Type,
 		IsRemoteFriendly: job.IsRemoteFriendly,
-		Keywords:         km,
+		Keywords:         repositories.StringKeywordsToModel(job.Keywords),
 	}
-	return jm
 }
 
 func jobModelToDomain(job Job) (domain.Job, error) {
