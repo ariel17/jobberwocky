@@ -8,7 +8,7 @@ import (
 	"github.com/swaggo/gin-swagger"
 
 	"github.com/ariel17/jobberwocky/api"
-	"github.com/ariel17/jobberwocky/resources/configs"
+	"github.com/ariel17/jobberwocky/configs"
 )
 
 type Handler interface {

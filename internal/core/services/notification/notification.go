@@ -7,9 +7,9 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/ariel17/jobberwocky/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
-	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 type notificationService struct {

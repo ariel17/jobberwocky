@@ -10,11 +10,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ariel17/jobberwocky/configs"
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories/subscription"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
-	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 func TestCreateBody(t *testing.T) {
