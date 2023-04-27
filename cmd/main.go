@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
+	http2 "github.com/ariel17/jobberwocky/internal/adapters/http"
 	jobHandler "github.com/ariel17/jobberwocky/internal/adapters/http/job"
 	subscriptionHandler "github.com/ariel17/jobberwocky/internal/adapters/http/subscription"
 	jobRepository "github.com/ariel17/jobberwocky/internal/adapters/repositories/job"
@@ -20,6 +21,18 @@ import (
 	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
+// @title           Jobberwocky API
+// @version         0.1.0
+// @description     A job posting and searching API.
+
+// @contact.name   Ariel Gerardo Ríos
+// @contact.url    http://ariel17.com.ar/
+// @contact.email  arielgerardorios@gmail.com
+
+// @license.name  MIT
+// @license.url   https://github.com/ariel17/jobberwocky/blob/master/LICENSE.md
+
+// @BasePath  /
 func main() {
 	db, err := gorm.Open(sqlite.Open(configs.GetDatabaseName()), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -52,10 +65,12 @@ func main() {
 
 	ss := subscriptionService.NewSubscriptionService(sr)
 	sh := subscriptionHandler.NewSubscriptionHTTPHandler(ss)
+	swh := http2.NewSwaggerHandler()
 
 	router := gin.Default()
 	jh.ConfigureRoutes(router)
 	sh.ConfigureRoutes(router)
+	swh.ConfigureRoutes(router)
 
-	router.Run(configs.GetHTTPAddress())
+	router.Run()
 }
