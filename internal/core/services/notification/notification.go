@@ -7,26 +7,28 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
+	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 type notificationService struct {
-	repository  ports.SubscriptionRepository
-	emailClient ports.EmailProviderClient
-	workers     int
-	input       chan domain.Job
-	output      chan error
+	repository   ports.SubscriptionRepository
+	emailClient  ports.EmailProviderClient
+	templatePath string
+	workers      int
+	input        chan domain.Job
+	output       chan error
 }
 
-func NewNotificationService(workers int, repository ports.SubscriptionRepository, emailClient ports.EmailProviderClient) ports.NotificationService {
+func NewNotificationService(workers int, repository ports.SubscriptionRepository, emailClient ports.EmailProviderClient, templatePath string) ports.NotificationService {
 	return &notificationService{
-		repository:  repository,
-		emailClient: emailClient,
-		workers:     workers,
-		input:       make(chan domain.Job),
-		output:      make(chan error),
+		repository:   repository,
+		emailClient:  emailClient,
+		templatePath: templatePath,
+		workers:      workers,
+		input:        make(chan domain.Job),
+		output:       make(chan error),
 	}
 }
 
@@ -57,14 +59,17 @@ func (n *notificationService) Process() {
 	}()
 
 	for job := range n.input {
+		log.Print("Looking for subscriptions to notify ...")
 		subscriptions, err := n.repository.Filter(job)
 		if err != nil {
 			log.Printf("failed to retrieve subscribers: %v", err)
 			continue
 		}
+
+		log.Printf("Found %d subscriptions to be notified: %v", len(subscriptions), subscriptions)
 		for _, subscription := range subscriptions {
-			subject := fmt.Sprintf("%s: %s", configs.GetEmailSubject(), job.Title)
-			body, err := createBody(configs.GetEmailTemplate(), job)
+			subject := fmt.Sprintf("%s %s", configs.GetEmailSubject(), job.Title)
+			body, err := createBody(n.templatePath, job)
 			if err != nil {
 				log.Printf("failed to create email body: %v", err)
 				continue
@@ -73,6 +78,8 @@ func (n *notificationService) Process() {
 				log.Printf("failed to send email: %v", err)
 			}
 		}
+
+		log.Print("Subscription notifications finished.")
 	}
 }
 
