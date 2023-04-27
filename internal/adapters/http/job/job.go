@@ -18,8 +18,8 @@ type jobHTTPHandler struct {
 	jobService ports.JobService
 }
 
-func NewJobHTTPHandler(jobService ports.JobService) *jobHTTPHandler {
-	return &jobHTTPHandler{jobService: jobService}
+func NewJobHTTPHandler(s ports.JobService) *jobHTTPHandler {
+	return &jobHTTPHandler{jobService: s}
 }
 
 func (j *jobHTTPHandler) Search(c *gin.Context) {
