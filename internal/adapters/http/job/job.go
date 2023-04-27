@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	searchPath = "/search"
+	jobsPath = "/jobs"
 )
 
 type jobHTTPHandler struct {
@@ -41,4 +41,24 @@ func (j *jobHTTPHandler) Search(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, jobs)
+}
+
+func (j *jobHTTPHandler) Post(c *gin.Context) {
+	var job domain.Job
+	if err := c.BindJSON(&job); err != nil {
+		c.JSON(http.StatusBadRequest, handlers.ErrorResponse{
+			Error:       err.Error(),
+			Description: "could not parse job to publish",
+		})
+		return
+	}
+
+	if err := j.jobService.Create(job); err != nil {
+		c.JSON(http.StatusInternalServerError, handlers.ErrorResponse{
+			Error:       err.Error(),
+			Description: "error saving new job",
+		})
+		return
+	}
+	c.Status(http.StatusCreated)
 }
