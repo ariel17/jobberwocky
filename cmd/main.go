@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/ariel17/jobberwocky/configs"
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
 	http2 "github.com/ariel17/jobberwocky/internal/adapters/http"
 	jobHandler "github.com/ariel17/jobberwocky/internal/adapters/http/job"
@@ -17,7 +18,6 @@ import (
 	"github.com/ariel17/jobberwocky/internal/core/services/job"
 	"github.com/ariel17/jobberwocky/internal/core/services/notification"
 	subscriptionService "github.com/ariel17/jobberwocky/internal/core/services/subscription"
-	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 // @title           Jobberwocky API
