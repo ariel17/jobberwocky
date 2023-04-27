@@ -68,7 +68,7 @@ func TestJobHTTPHandler_Search(t *testing.T) {
 
 			handler := NewJobHTTPHandler(jobService)
 			router := gin.Default()
-			router.GET(jobsPath, handler.Search)
+			handler.ConfigureRoutes(router)
 
 			req, _ := http.NewRequest(http.MethodGet, jobsPath+tc.qs, nil)
 			rr := httptest.NewRecorder()
@@ -109,6 +109,12 @@ func TestJobHTTPHandler_Post(t *testing.T) {
 		{"new job published", "post_body_new", "", nil, nil, nil, http.StatusCreated, 2},
 		{"failed by job repository", "post_body_new", "post_response_job_repository_error", errors.New("mocked job repository error"), nil, nil, http.StatusInternalServerError, 0},
 		{"failed by invalid body", "post_body_invalid", "post_response_invalid", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by invalid title", "post_body_invalid_title", "post_response_invalid_title", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by having source", "post_body_invalid_source", "post_response_invalid_source", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by invalid type", "post_body_invalid_type", "post_response_invalid_type", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by invalid salary", "post_body_invalid_salary", "post_response_invalid_salary", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by invalid location & is_remote_friendly", "post_body_invalid_location_is_remote_friendly", "post_response_invalid_location_is_remote_friendly", nil, nil, nil, http.StatusBadRequest, 0},
+		{"failed by repeated keywords", "post_body_invalid_keywords", "post_response_invalid_keywords", nil, nil, nil, http.StatusBadRequest, 0},
 		{"partial success by subscription repository error", "post_body_new", "", nil, errors.New("mocked subscription repository error"), nil, http.StatusCreated, 0},
 		{"partial success by email client error", "post_body_new", "", nil, nil, errors.New("mocked email client error"), http.StatusCreated, 2},
 	}
@@ -140,7 +146,7 @@ func TestJobHTTPHandler_Post(t *testing.T) {
 
 			handler := NewJobHTTPHandler(jobService)
 			router := gin.Default()
-			router.POST(jobsPath, handler.Post)
+			handler.ConfigureRoutes(router)
 
 			body := helpers.GetGoldenFile(t, tc.goldenPathBody)
 			req, _ := http.NewRequest(http.MethodPost, jobsPath, strings.NewReader(body))
