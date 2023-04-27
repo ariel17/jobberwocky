@@ -5,13 +5,13 @@ WORKDIR /build
 ENV CGO_ENABLED=1
 COPY . .
 RUN go mod tidy
-RUN go test -v -race -cover ./...
-RUN GOOS=linux GOARCH=amd64 go build -o api .
+RUN go test -race -cover ./...
+RUN GOOS=linux GOARCH=amd64 go build -o app ./cmd
 
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=build /build/api /build/resources ./
+COPY --from=build /build/app /build/resources ./
 
 ENV EMAIL_FROM jobs@example.com
 ENV EMAIL_SUBJECT A new job alert has arrived!
@@ -21,4 +21,4 @@ ENV HTTP_ADDRESS :8080
 ENV DATABASE_NAME production.db
 ENV JOBBERWOCKY_URL http://localhost:8090
 
-CMD ["./api"]
+CMD ["./app"]
