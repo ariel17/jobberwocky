@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/ariel17/jobberwocky/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/ariel17/jobberwocky/tree/master)
+
 # Jobberwocky home challenge
 
 Hi there! This is my implementation for the Jobberwocky's home challenge. [Read
