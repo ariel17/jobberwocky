@@ -155,7 +155,7 @@ func TestJobHTTPHandler_Post(t *testing.T) {
 			router.ServeHTTP(rr, req)
 			assert.Equal(t, tc.statusCode, rr.Code)
 
-			time.Sleep(time.Millisecond)
+			time.Sleep(500 * time.Millisecond)
 
 			if tc.statusCode != http.StatusCreated {
 				expected := helpers.GetGoldenFile(t, tc.goldenPathResponse)
