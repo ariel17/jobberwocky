@@ -60,7 +60,8 @@ func Matches(pattern domain.Pattern, job domain.Job) bool {
 			(job.SalaryMin > 0 && pattern.Salary >= job.SalaryMin && pattern.Salary <= job.SalaryMax) ||
 				(job.SalaryMin == 0 && pattern.Salary == job.SalaryMax))) &&
 		(pattern.Type == "" || pattern.Type == job.Type) &&
-		(pattern.IsRemoteFriendly == nil || (pattern.IsRemoteFriendly != nil && job.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == *job.IsRemoteFriendly)) &&
+		(pattern.IsRemoteFriendly == nil ||
+			(pattern.IsRemoteFriendly != nil && job.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == *job.IsRemoteFriendly)) &&
 		allKeywordsContained(pattern.Keywords, job.Keywords)
 }
 
