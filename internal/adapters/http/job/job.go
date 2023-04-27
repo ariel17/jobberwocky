@@ -15,10 +15,11 @@ const (
 )
 
 type jobHTTPHandler struct {
+	handlers.Handler
 	jobService ports.JobService
 }
 
-func NewJobHTTPHandler(s ports.JobService) *jobHTTPHandler {
+func NewJobHTTPHandler(s ports.JobService) handlers.Handler {
 	return &jobHTTPHandler{jobService: s}
 }
 
@@ -61,4 +62,9 @@ func (j *jobHTTPHandler) Post(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusCreated)
+}
+
+func (j *jobHTTPHandler) ConfigureRoutes(router *gin.Engine) {
+	router.GET(jobsPath, j.Search)
+	router.POST(jobsPath, j.Post)
 }

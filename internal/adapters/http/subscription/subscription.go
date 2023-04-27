@@ -15,6 +15,7 @@ const (
 )
 
 type subscriptionHTTPHandler struct {
+	handlers.Handler
 	subscriptionService ports.SubscriptionService
 }
 
@@ -40,4 +41,8 @@ func (s *subscriptionHTTPHandler) Post(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusCreated)
+}
+
+func (s *subscriptionHTTPHandler) ConfigureRoutes(router *gin.Engine) {
+	router.POST(subscriptionPath, s.Post)
 }
