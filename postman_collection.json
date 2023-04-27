@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "6b6115b2-378f-496f-8509-14b15026060b",
+		"name": "Jobberwocky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16445484"
+	},
+	"item": [
+		{
+			"name": "Search - All jobs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by title/description",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?text=Java",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "text",
+							"value": "Java"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by salary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?salary=24000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "salary",
+							"value": "24000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?location=Argentina",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "location",
+							"value": "Argentina"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by keyword",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?keywords=OOP",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "keywords",
+							"value": "OOP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by keywords",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?keywords=IT&keywords=Networking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "keywords",
+							"value": "IT"
+						},
+						{
+							"key": "keywords",
+							"value": "Networking"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by type",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?type=Contractor",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "Contractor"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by company",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?company=SpaceX",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "company",
+							"value": "SpaceX"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search - Filter by is_remote_friendly",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8090/jobs?is_remote_friendly=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "is_remote_friendly",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post - New job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Junior Kotlin developer\",\n  \"description\": \"We need you to make the work.\",\n  \"company\": \"SpaceX\",\n  \"location\": \"Argentina\",\n  \"salary_min\": 2000,\n  \"salary_max\": 3000,\n  \"type\": \"Contractor\",\n  \"is_remote_friendly\": true,\n  \"keywords\": [\n    \"kotlin\",\n    \"python\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/jobs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post - New subscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"me@example.com\",\n  \"company\": \"SpaceX\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/subscriptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

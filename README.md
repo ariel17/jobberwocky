@@ -36,6 +36,8 @@ You can update it running the following command:
 $ swag init --dir cmd,internal --output api
 ```
 
+A Postman collection also is ready for you in `postman_collection.json` :)
+
 ### Available environment variables
 
 ```bash
