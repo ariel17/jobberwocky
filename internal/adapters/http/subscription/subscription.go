@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	subscriptionPath = "/subscription"
+	subscriptionPath = "/subscriptions"
 )
 
 type subscriptionHTTPHandler struct {
@@ -23,12 +23,30 @@ func NewSubscriptionHTTPHandler(s ports.SubscriptionService) *subscriptionHTTPHa
 	return &subscriptionHTTPHandler{subscriptionService: s}
 }
 
+// Post handles the request to create a new subscription to be notified on new job posts.
+// @Summary      Creates a new subscripion
+// @Description  Receives a JSON body with the email and filter values to match new job posts and be notified.
+// @Tags         jobs
+// @Accept       json
+// @Produce      json
+// @Success      201  {object}	domain.Subscription
+// @Failure      400  {object}  http.ErrorResponse
+// @Failure      500  {object}  http.ErrorResponse
+// @Router       /subscriptions [post]
 func (s *subscriptionHTTPHandler) Post(c *gin.Context) {
 	var subscription domain.Subscription
 	if err := c.BindJSON(&subscription); err != nil {
 		c.JSON(http.StatusBadRequest, handlers.ErrorResponse{
 			Error:       err.Error(),
 			Description: "could not parse subscription",
+		})
+		return
+	}
+
+	if err := subscription.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, handlers.ErrorResponse{
+			Error:       err.Error(),
+			Description: "subscription is invalid",
 		})
 		return
 	}
