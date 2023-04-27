@@ -3,20 +3,20 @@ package configs
 import "os"
 
 const (
-	httpAddressKey     = "HTTP_ADDRESS"
-	defaultHTTPAddress = ":8080"
+	httpPortKey     = "PORT"
+	defaultHTTPPort = "8080"
 )
 
 var (
-	httpAddress = ""
+	httpPort = ""
 )
 
-func GetHTTPAddress() string {
-	return httpAddress
+func GetHTTPPort() string {
+	return httpPort
 }
 
 func init() {
-	if httpAddress = os.Getenv(httpAddressKey); httpAddress == "" {
-		httpAddress = defaultHTTPAddress
+	if httpPort = os.Getenv(httpPortKey); httpPort == "" {
+		httpPort = defaultHTTPPort
 	}
 }
