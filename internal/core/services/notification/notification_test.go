@@ -3,6 +3,7 @@ package notification
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -11,9 +12,9 @@ import (
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
 	"github.com/ariel17/jobberwocky/internal/adapters/repositories/subscription"
-	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	helpers "github.com/ariel17/jobberwocky/internal/internal_test"
+	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 func TestCreateBody(t *testing.T) {
@@ -23,7 +24,7 @@ func TestCreateBody(t *testing.T) {
 		file    string
 		success bool
 	}{
-		{"ok", configs.DefaultTemplate, true},
+		{"ok", getTemplatePath(t), true},
 		{"template not exists", "notexists.tmpl", false},
 	}
 	for _, tc := range testCases {
@@ -68,7 +69,7 @@ func TestNotificationService_Enqueue(t *testing.T) {
 					{domain.Pattern{Location: "USA"}, "person3@example.com"},
 				},
 			}
-			service := NewNotificationService(configs.GetNotificationWorkers(), &repository, &emailClient)
+			service := NewNotificationService(configs.GetNotificationWorkers(), &repository, &emailClient, getTemplatePath(t))
 			service.StartWorkers()
 			defer service.StopWorkers()
 
@@ -82,4 +83,10 @@ func TestNotificationService_Enqueue(t *testing.T) {
 			}
 		})
 	}
+}
+
+func getTemplatePath(t *testing.T) string {
+	wd, err := os.Getwd()
+	assert.Nil(t, err)
+	return wd + "/../../../../resources/body.tmpl"
 }
