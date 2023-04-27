@@ -28,7 +28,7 @@ func (j *jobRepository) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 	)
 	if pattern != nil && !pattern.IsEmpty() {
 		query, parameters := patternToQueryAndParameters(*pattern)
-		tx = j.db.Where(query, parameters).Find(&modelJobs)
+		tx = j.db.Preload("Keywords").Where(query, parameters).Find(&modelJobs)
 	} else {
 		tx = j.db.Preload("Keywords").Find(&modelJobs)
 	}
