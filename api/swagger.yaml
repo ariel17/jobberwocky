@@ -1,0 +1,180 @@
+basePath: /
+definitions:
+  domain.Job:
+    properties:
+      company:
+        type: string
+      description:
+        type: string
+      is_remote_friendly:
+        type: boolean
+      keywords:
+        items:
+          type: string
+        type: array
+      location:
+        type: string
+      salary_max:
+        type: integer
+      salary_min:
+        type: integer
+      source:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  domain.Subscription:
+    properties:
+      company:
+        type: string
+      email:
+        type: string
+      is_remote_friendly:
+        type: boolean
+      keywords:
+        items:
+          type: string
+        type: array
+      location:
+        type: string
+      salary:
+        type: integer
+      text:
+        type: string
+      type:
+        type: string
+    type: object
+  http.ErrorResponse:
+    properties:
+      description:
+        type: string
+      error:
+        type: string
+    type: object
+info:
+  contact:
+    email: arielgerardorios@gmail.com
+    name: Ariel Gerardo Ríos
+    url: http://ariel17.com.ar/
+  description: A job posting and searching API.
+  license:
+    name: MIT
+    url: https://github.com/ariel17/jobberwocky/blob/master/LICENSE.md
+  title: Jobberwocky API
+  version: 0.1.0
+paths:
+  /jobs:
+    get:
+      consumes:
+      - application/json
+      description: Based on filter parameters it searches in jobs in the local database
+        and in external resources concurrently.
+      parameters:
+      - description: Filters jobs by matching text in title or description (case-insensitive).
+        in: query
+        name: text
+        type: string
+      - description: Filters jobs by matching company (case-sensitive).
+        in: query
+        name: company
+        type: string
+      - description: Filters jobs by matching location (case-sensitive).
+        in: query
+        name: location
+        type: string
+      - description: Filters jobs by matching salary, fixed or in range.
+        in: query
+        name: salary
+        type: integer
+      - description: 'Filters jobs by matching work type (case-sensitive). Values:
+          Full-Time, Contractor, Part-Time.'
+        in: query
+        name: type
+        type: string
+      - description: Filters jobs by remote condition.
+        in: query
+        name: is_remote_friendly
+        type: boolean
+      - description: Filters jobs by keywords (case-sensitive, inclusive).
+        in: query
+        items:
+          type: string
+        name: keywords
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Job'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Search for published jobs
+      tags:
+      - jobs
+    post:
+      consumes:
+      - application/json
+      description: Creates a new job receiving a JSON body with the details. If matching
+        subscriptions exists, it sends notifications by email asynchronously.
+      parameters:
+      - description: New job details.
+        in: body
+        name: job
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Job'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Job'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Publish a new job
+      tags:
+      - jobs
+  /subscriptions:
+    post:
+      consumes:
+      - application/json
+      description: Receives a JSON body with the email and filter values to match
+        new job posts and be notified.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Creates a new subscripion
+      tags:
+      - jobs
+swagger: "2.0"
