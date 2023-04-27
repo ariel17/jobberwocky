@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/internal_test"
 )
 
@@ -14,6 +15,10 @@ type MockExternalJobClient struct {
 
 func (m *MockExternalJobClient) Name() string {
 	return "mock"
+}
+
+func (m *MockExternalJobClient) PatternIsSearchable(pattern *domain.Pattern) bool {
+	return true
 }
 
 type MockHTTPClient struct {
