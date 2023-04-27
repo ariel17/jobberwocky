@@ -25,82 +25,53 @@ type Job struct {
 	Source           string   `json:"source"`
 }
 
-func (j Job) IsTitleValid() bool {
-	return j.Title != ""
-}
-
-// IsTypeValid checks that `Type` field only contains specific values.
-func (j Job) IsTypeValid() bool {
-	if j.Source == "" {
-		for _, t := range []string{Contractor, FullTime, PartTime} {
-			if j.Type == t {
-				return true
-			}
-		}
-		return false
-	}
-	return true
-}
-
-// IsSalaryValid checks for correct ranges or fixed values to be correct.
-func (j Job) IsSalaryValid() bool {
+// isSalaryValid checks for correct ranges or fixed values to be correct.
+func (j Job) isSalaryValid() bool {
 	if j.SalaryMin > 0 {
 		return j.SalaryMax > j.SalaryMin
 	}
 	return j.SalaryMax > 0
 }
 
-// IsLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
+// isLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
 // that no location is remote-friendly.
-func (j Job) IsLocationAndIsRemoteFriendlyValid() bool {
+func (j Job) isLocationAndIsRemoteFriendlyValid() bool {
 	if j.Location == "" && j.IsRemoteFriendly != nil {
-		return *j.IsRemoteFriendly == true
+		return *j.IsRemoteFriendly == false
 	}
 	return true
 }
 
-// IsKeywordsValid checks for repeated values in list.
-func (j Job) IsKeywordsValid() bool {
-	for index, keyword1 := range j.Keywords {
-		for _, keyword2 := range j.Keywords[index+1:] {
-			if keyword1 == keyword2 {
-				return false
-			}
+func (j Job) isSourceValid(isLocal bool) bool {
+	if isLocal {
+		return j.Source == ""
+	}
+	return j.Source != ""
+}
+
+func (j Job) Validate(isLocal bool) error {
+	if j.Title == "" {
+		return errors.New("title cannot be empty")
+	}
+	if !isTypeValid(j.Source, j.Type) {
+		return fmt.Errorf("type value is invalid: %s", j.Type)
+	}
+	if !j.isSalaryValid() {
+		return fmt.Errorf("fixed/ranged salary is invalid: min=%d, max=%d", j.SalaryMin, j.SalaryMax)
+	}
+	if !j.isLocationAndIsRemoteFriendlyValid() {
+		return fmt.Errorf("location and remote-friendly values are incorrect: location=%s, is_remote_friendly=%v", j.Location, *j.IsRemoteFriendly)
+	}
+	if !isKeywordsValid(j.Keywords) {
+		return errors.New("keywords needs to be unique")
+	}
+	if !j.isSourceValid(isLocal) {
+		if isLocal {
+			return errors.New("source is not allowed")
 		}
+		return errors.New("source is required")
 	}
-	return true
-}
-
-// NewJob creates a new job instance and ensures field values are valid.
-func NewJob(title, description, company, location string, salaryMin, salaryMax int, jobType string, isRemoteFriendly *bool, source string, keywords ...string) (Job, error) {
-	job := Job{
-		Title:            title,
-		Description:      description,
-		Company:          company,
-		Location:         location,
-		SalaryMin:        salaryMin,
-		SalaryMax:        salaryMax,
-		Type:             jobType,
-		IsRemoteFriendly: isRemoteFriendly,
-		Keywords:         keywords,
-		Source:           source,
-	}
-	if !job.IsTitleValid() {
-		return Job{}, errors.New("title cannot be empty")
-	}
-	if !job.IsTypeValid() {
-		return Job{}, fmt.Errorf("type value is invalid: %s", jobType)
-	}
-	if !job.IsSalaryValid() {
-		return Job{}, fmt.Errorf("fixed/ranged salary is invalid: min=%d, max=%d", salaryMin, salaryMax)
-	}
-	if !job.IsLocationAndIsRemoteFriendlyValid() {
-		return Job{}, fmt.Errorf("location and remote-friendly values are incorrect: location=%s, remote friendly=%v", location, *isRemoteFriendly)
-	}
-	if !job.IsKeywordsValid() {
-		return Job{}, errors.New("keywords needs to be unique")
-	}
-	return job, nil
+	return nil
 }
 
 // Pattern contains value patterns to match when searching for matching jobs.
@@ -120,9 +91,54 @@ func (p Pattern) IsEmpty() bool {
 		len(p.Keywords) == 0
 }
 
+func (p Pattern) Validate() error {
+	if !isKeywordsValid(p.Keywords) {
+		return errors.New("keywords needs to be unique")
+	}
+	if p.Type != "" && !isTypeValid("", p.Type) {
+		return fmt.Errorf("type value is invalid: %s", p.Type)
+	}
+	return nil
+}
+
 // Subscription contains the contact details to notify a person about a matching
 // job.
 type Subscription struct {
 	Pattern
 	Email string
+}
+
+func (s Subscription) Validate() error {
+	if err := s.Pattern.Validate(); err != nil {
+		return err
+	}
+	if s.Email == "" {
+		return errors.New("email cannot be empty")
+	}
+	return nil
+}
+
+// isKeywordsValid checks for repeated values in list.
+func isKeywordsValid(keywords []string) bool {
+	for index, k1 := range keywords {
+		for _, k2 := range keywords[index+1:] {
+			if k1 == k2 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// isTypeValid checks that `Type` field only contains specific values.
+func isTypeValid(source, jobType string) bool {
+	if source == "" {
+		for _, t := range []string{Contractor, FullTime, PartTime} {
+			if jobType == t {
+				return true
+			}
+		}
+		return false
+	}
+	return true
 }

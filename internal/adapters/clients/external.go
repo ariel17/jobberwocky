@@ -70,8 +70,8 @@ func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain
 		for _, k := range rawJob[3].([]interface{}) {
 			keywords = append(keywords, k.(string))
 		}
-		j, err := domain.NewJob(title, "", "", location, 0, salaryMax, "", nil, j.Name(), keywords...)
-		if err != nil {
+		j := domain.Job{Title: title, Description: "", Company: "", Location: location, SalaryMin: 0, SalaryMax: salaryMax, Type: "", IsRemoteFriendly: nil, Source: j.Name(), Keywords: keywords}
+		if err := j.Validate(false); err != nil {
 			return nil, err
 		}
 		jobs = append(jobs, j)
