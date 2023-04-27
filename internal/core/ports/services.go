@@ -21,3 +21,9 @@ type NotificationService interface {
 	StopWorkers()
 	Process()
 }
+
+// SubscriptionService takes new subscriptions to be saved for future
+// notifications.
+type SubscriptionService interface {
+	Create(subscription domain.Subscription) error
+}
