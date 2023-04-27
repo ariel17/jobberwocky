@@ -1,6 +1,8 @@
 package subscription
 
 import (
+	"errors"
+
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	mocks "github.com/ariel17/jobberwocky/internal/internal_test"
 )
@@ -24,6 +26,11 @@ func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscripti
 
 func (m *MockSubscriptionRepository) Save(subscription domain.Subscription) error {
 	m.SetSaveCalled()
+	for _, existingSubscription := range m.Subscriptions {
+		if existingSubscription.Email == subscription.Email {
+			return errors.New("email already exists")
+		}
+	}
 	m.Subscriptions = append(m.Subscriptions, subscription)
 	return m.Error
 }
