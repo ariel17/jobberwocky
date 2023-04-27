@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ariel17/jobberwocky/internal/configs"
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
+	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 type HTTPClient interface {
