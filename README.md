@@ -22,7 +22,7 @@ local execution and the Avature's external source.
 $ docker-compose up  # use -d to detach console
 
 # console 2
-$ curl -v "http://localhost:8080/search?title=java"
+$ curl -v "http://localhost:8090/jobs?text=java"
 ```
 
 ### API Documentation
