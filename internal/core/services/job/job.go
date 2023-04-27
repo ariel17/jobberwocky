@@ -2,6 +2,7 @@ package job
 
 import (
 	"log"
+	"sort"
 	"sync"
 
 	"github.com/ariel17/jobberwocky/internal/core/domain"
@@ -56,6 +57,10 @@ func (j *jobService) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
 	for jobs := range jobsOutput {
 		results = append(results, jobs...)
 	}
+
+	sort.Slice(results, func(i, j int) bool {
+		return len(results[i].Source) > len(results[j].Source)
+	})
 
 	return results, nil
 }
