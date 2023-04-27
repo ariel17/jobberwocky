@@ -63,7 +63,7 @@ info:
     name: MIT
     url: https://github.com/ariel17/jobberwocky/blob/master/LICENSE.md
   title: Jobberwocky API
-  version: 0.1.0
+  version: 1.0.0
 paths:
   /jobs:
     get:
