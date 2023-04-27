@@ -6,21 +6,14 @@ services:
       - extra-source
     environment:
       PORT: 8090
-      JOBBERWOCKY_URL: http://extra-source
+      JOBBERWOCKY_URL: http://extra-source:8080
     ports:
       - "8090:8090"
-    networks:
-      - backend
-      - extra
+    links:
+      - "extra-source"
 
   extra-source:
     build:
       context: ./jobberwocky-extra-source
     ports:
       - "8080:8080"
-    networks:
-      - extra
-
-networks:
-  backend:
-  extra:
