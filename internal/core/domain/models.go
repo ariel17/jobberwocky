@@ -13,16 +13,16 @@ const (
 
 // Job contains the details of a hiring position on a company.
 type Job struct {
-	Title            string
-	Description      string
-	Company          string
-	Location         string
-	SalaryMin        int
-	SalaryMax        int
-	Type             string
-	IsRemoteFriendly *bool
-	Keywords         []string
-	Source           string
+	Title            string   `json:"title"`
+	Description      string   `json:"description"`
+	Company          string   `json:"company"`
+	Location         string   `json:"location"`
+	SalaryMin        int      `json:"salary_min"`
+	SalaryMax        int      `json:"salary_max"`
+	Type             string   `json:"type"`
+	IsRemoteFriendly *bool    `json:"is_remote_friendly,omitempty"`
+	Keywords         []string `json:"keywords"`
+	Source           string   `json:"source"`
 }
 
 func (j Job) IsTitleValid() bool {
@@ -105,13 +105,13 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 
 // Pattern contains value patterns to match when searching for matching jobs.
 type Pattern struct {
-	Text             string
-	Company          string
-	Location         string
-	Salary           int
-	Type             string
-	IsRemoteFriendly *bool
-	Keywords         []string
+	Text             string   `form:"text"`
+	Company          string   `form:"company"`
+	Location         string   `form:"location"`
+	Salary           int      `form:"salary"`
+	Type             string   `form:"type"`
+	IsRemoteFriendly *bool    `form:"is_remote_friendly"`
+	Keywords         []string `form:"keywords"`
 }
 
 func (p Pattern) IsEmpty() bool {
