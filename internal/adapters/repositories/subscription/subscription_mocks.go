@@ -22,8 +22,9 @@ func (m *MockSubscriptionRepository) Filter(job domain.Job) ([]domain.Subscripti
 	return results, m.Error
 }
 
-func (m *MockSubscriptionRepository) Save(_ domain.Subscription) error {
+func (m *MockSubscriptionRepository) Save(subscription domain.Subscription) error {
 	m.SetSaveCalled()
+	m.Subscriptions = append(m.Subscriptions, subscription)
 	return m.Error
 }
 
