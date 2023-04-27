@@ -11,7 +11,8 @@ RUN GOOS=linux GOARCH=amd64 go build -o app ./cmd
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=build /build/app /build/resources ./
+COPY --from=build /build/app ./
+COPY --from=build /build/resources ./resources
 
 ENV EMAIL_FROM jobs@example.com
 ENV EMAIL_SUBJECT A new job alert has arrived!
