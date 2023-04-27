@@ -3,7 +3,6 @@ package job
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -77,7 +76,7 @@ func TestJobHTTPHandler_Search(t *testing.T) {
 			router.ServeHTTP(rr, req)
 			assert.Equal(t, tc.statusCode, rr.Code)
 
-			expected := getGoldenFile(t, tc.goldenPath)
+			expected := helpers.GetGoldenFile(t, tc.goldenPath)
 			assert.Equal(t, expected, rr.Body.String())
 
 			if tc.statusCode == http.StatusOK {
@@ -143,7 +142,7 @@ func TestJobHTTPHandler_Post(t *testing.T) {
 			router := gin.Default()
 			router.POST(jobsPath, handler.Post)
 
-			body := getGoldenFile(t, tc.goldenPathBody)
+			body := helpers.GetGoldenFile(t, tc.goldenPathBody)
 			req, _ := http.NewRequest(http.MethodPost, jobsPath, strings.NewReader(body))
 			rr := httptest.NewRecorder()
 
@@ -153,19 +152,13 @@ func TestJobHTTPHandler_Post(t *testing.T) {
 			time.Sleep(time.Millisecond)
 
 			if tc.statusCode != http.StatusCreated {
-				expected := getGoldenFile(t, tc.goldenPathResponse)
+				expected := helpers.GetGoldenFile(t, tc.goldenPathResponse)
 				assert.Equal(t, expected, rr.Body.String())
 			} else {
 				assert.Equal(t, tc.matchingSubscribers, ec.SendCalls())
 			}
 		})
 	}
-}
-
-func getGoldenFile(t *testing.T, name string) string {
-	content, err := os.ReadFile(fmt.Sprintf("goldenfiles/%s.json", name))
-	assert.Nil(t, err)
-	return string(content)
 }
 
 func getTemplatePath(t *testing.T) string {
