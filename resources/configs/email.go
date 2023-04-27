@@ -35,13 +35,11 @@ func GetEmailTemplate() string {
 }
 
 func init() {
-	emailFrom = os.Getenv(emailFromKey)
-	if emailFrom == "" {
+	if emailFrom = os.Getenv(emailFromKey); emailFrom == "" {
 		emailFrom = defaultEmailFrom
 	}
 
-	emailSubject = os.Getenv(emailSubjectKey)
-	if emailSubject == "" {
+	if emailSubject = os.Getenv(emailSubjectKey); emailSubject == "" {
 		emailSubject = defaultEmailSubject
 	}
 

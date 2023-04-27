@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
@@ -21,8 +22,8 @@ func GetNotificationWorkers() int {
 func init() {
 	workers := os.Getenv(notificationWorkersKey)
 	var err error
-	notificationWorkers, err = strconv.Atoi(workers)
-	if err != nil {
+	if notificationWorkers, err = strconv.Atoi(workers); err != nil {
+		log.Printf("Using default workers: error=%v, workers=%d", err, defaultNotificationWorkers)
 		notificationWorkers = defaultNotificationWorkers
 	}
 }
