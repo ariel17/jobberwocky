@@ -54,7 +54,7 @@ func TestExternalJobClient_Filter(t *testing.T) {
 				Body:       tc.body,
 				Error:      tc.err,
 			}
-			client := NewJobberwockyExternalJobClient(&httpClient)
+			client := NewJobberwockyExternalJobClient(&httpClient, "")
 			jobs, err := client.Filter(tc.pattern)
 			if tc.success {
 				assert.NotNil(t, jobs)

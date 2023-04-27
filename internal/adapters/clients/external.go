@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/ariel17/jobberwocky/internal/core/domain"
 	"github.com/ariel17/jobberwocky/internal/core/ports"
-	"github.com/ariel17/jobberwocky/resources/configs"
 )
 
 type HTTPClient interface {
@@ -18,20 +18,23 @@ type HTTPClient interface {
 
 type jobberwockyJobs [][]interface{}
 
-func NewJobberwockyExternalJobClient(client HTTPClient) ports.ExternalJobClient {
-	return &jobberwockyExternalJobClient{
-		client: client,
-	}
-
-}
-
 type jobberwockyExternalJobClient struct {
 	client HTTPClient
+	url    string
+}
+
+func NewJobberwockyExternalJobClient(client HTTPClient, url string) ports.ExternalJobClient {
+	return &jobberwockyExternalJobClient{
+		client: client,
+		url:    url,
+	}
 }
 
 func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
-	qs := patternToQueryString(pattern)
-	req, err := http.NewRequest("GET", configs.GetJobberwockyURL()+"/jobs"+qs, nil)
+	url := j.url + "/jobs" + patternToQueryString(pattern)
+	log.Printf("Requesting external resource: url=%s", url)
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -42,6 +45,8 @@ func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain
 	defer func() {
 		_ = response.Body.Close()
 	}()
+
+	log.Printf("External resource response: status_code=%d, content_length=%d", response.StatusCode, response.ContentLength)
 
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("api error: %d", response.StatusCode)
