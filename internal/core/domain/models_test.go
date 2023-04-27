@@ -151,6 +151,27 @@ func TestSubscription_Validate(t *testing.T) {
 	}
 }
 
+func TestAllKeywordsContained(t *testing.T) {
+	testCases := []struct {
+		name            string
+		patternKeywords []string
+		jobKeywords     []string
+		allContained    bool
+	}{
+		{"all contained v1", []string{"k1", "k2"}, []string{"k2", "k1"}, true},
+		{"all contained v2", []string{"k1"}, []string{"k2", "k1"}, true},
+		{"all contained v3", nil, []string{"k2", "k1"}, true},
+		{"all contained v4", nil, nil, true},
+		{"not contained", []string{"k3"}, []string{"k2", "k1"}, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.allContained, AllKeywordsContained(tc.patternKeywords, tc.jobKeywords))
+		})
+	}
+}
+
 func TestIsKeywordsValid(t *testing.T) {
 	testCases := []struct {
 		name     string
