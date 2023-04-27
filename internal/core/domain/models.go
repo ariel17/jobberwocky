@@ -105,13 +105,13 @@ func NewJob(title, description, company, location string, salaryMin, salaryMax i
 
 // Pattern contains value patterns to match when searching for matching jobs.
 type Pattern struct {
-	Text             string   `form:"text"`
-	Company          string   `form:"company"`
-	Location         string   `form:"location"`
-	Salary           int      `form:"salary"`
-	Type             string   `form:"type"`
-	IsRemoteFriendly *bool    `form:"is_remote_friendly"`
-	Keywords         []string `form:"keywords"`
+	Text             string   `form:"text" json:"text"`
+	Company          string   `form:"company" json:"company"`
+	Location         string   `form:"location" json:"location"`
+	Salary           int      `form:"salary" json:"salary"`
+	Type             string   `form:"type" json:"type"`
+	IsRemoteFriendly *bool    `form:"is_remote_friendly" json:"is_remote_friendly,omitempty"`
+	Keywords         []string `form:"keywords" json:"keywords"`
 }
 
 func (p Pattern) IsEmpty() bool {
