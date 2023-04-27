@@ -25,19 +25,6 @@ $ docker-compose up  # use -d to detach console
 $ curl -v "http://localhost:8090/jobs?text=java"
 ```
 
-### API Documentation
-Once up and running, read the [Swagger 
-documentation](http://localhost:8090/swagger/index.html) for details
-on API usage.
-
-You can update it running the following command:
-
-```bash
-$ swag init --dir cmd,internal --output api
-```
-
-A Postman collection also is ready for you in `postman_collection.json` :)
-
 ### Available environment variables
 
 ```bash
@@ -52,6 +39,19 @@ DATABASE_NAME=production.db
 # required
 JOBBERWOCKY_URL=http://localhost:8090
 ```
+
+## API Documentation
+Once up and running, read the [Swagger
+documentation](http://localhost:8090/swagger/index.html) for details
+on API usage.
+
+You can update it running the following command:
+
+```bash
+$ swag init --dir cmd,internal --output api
+```
+
+A Postman collection also is ready for you in `postman_collection.json` :)
 
 ## Diagrams
 
