@@ -1,0 +1,14 @@
+{
+  "title": "",
+  "description": "We need you to make the work.",
+  "company": "SpaceX",
+  "location": "Argentina",
+  "salary_min": 2000,
+  "salary_max": 3000,
+  "type": "Contractor",
+  "is_remote_friendly": true,
+  "keywords": [
+    "kotlin",
+    "java"
+  ]
+}

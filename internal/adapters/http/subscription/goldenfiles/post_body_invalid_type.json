@@ -1,0 +1,7 @@
+{
+  "email": "person1@example.com",
+  "company": "SpaceX",
+  "type": "invalid",
+  "salary": 1000,
+  "is_remote_friendly": true
+}
