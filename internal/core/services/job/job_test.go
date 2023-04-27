@@ -40,7 +40,7 @@ func TestJobService_Create(t *testing.T) {
 	}
 }
 
-func TestJobService_Match(t *testing.T) {
+func TestJobService_Filter(t *testing.T) {
 	testCases := []struct {
 		name          string
 		pattern       *domain.Pattern
