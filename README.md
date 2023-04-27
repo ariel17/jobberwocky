@@ -25,14 +25,20 @@ $ curl -v "http://localhost:8080/search?title=java"
 
 ### API Documentation
 Once up and running, read the [Swagger 
-documentation](http://localhost:8080/docs) for details
+documentation](http://localhost:8090/swagger/index.html) for details
 on API usage.
+
+You can update it running the following command:
+
+```bash
+$ swag init --dir cmd,internal --output api
+```
 
 ### Available environment variables
 
 ```bash
 # with defaults
-HTTP_ADDRESS=:8080
+PORT=8080
 EMAIL_FROM=jobs@example.com
 EMAIL_SUBJECT=A new job alert has arrived!
 EMAIL_TEMPLATE=./resources/body.tmpl
