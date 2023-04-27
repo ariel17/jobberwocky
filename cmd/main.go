@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 
 	"github.com/ariel17/jobberwocky/internal/adapters/clients"
 	http2 "github.com/ariel17/jobberwocky/internal/adapters/http"
@@ -34,9 +33,7 @@ import (
 
 // @BasePath  /
 func main() {
-	db, err := gorm.Open(sqlite.Open(configs.GetDatabaseName()), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := gorm.Open(sqlite.Open(configs.GetDatabaseName()), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
