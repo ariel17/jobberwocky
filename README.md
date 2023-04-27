@@ -1,4 +1,4 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/ariel17/jobberwocky/tree/master.svg?style=shield&circle-token=6b545bde2030b76f9305af7fcc0c2aae8ac96f22)](https://dl.circleci.com/status-badge/redirect/gh/ariel17/jobberwocky/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/ariel17/jobberwocky/tree/master.svg?style=shield&circle-token=6b545bde2030b76f9305af7fcc0c2aae8ac96f22)](https://dl.circleci.com/status-badge/redirect/gh/ariel17/jobberwocky/tree/master) [![codecov](https://codecov.io/gh/ariel17/jobberwocky/branch/master/graph/badge.svg?token=01YJEADES8)](https://codecov.io/gh/ariel17/jobberwocky)
 
 # Jobberwocky home challenge
 
