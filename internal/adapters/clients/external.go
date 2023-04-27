@@ -31,6 +31,10 @@ func NewJobberwockyExternalJobClient(client HTTPClient, url string) ports.Extern
 }
 
 func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain.Job, error) {
+	if !j.PatternIsSearchable(pattern) {
+		log.Printf("Pattern is not searchable in this resource; omitting. external_resource=%s pattern=%v", j.Name(), pattern)
+		return make([]domain.Job, 0), nil
+	}
 	url := j.url + "/jobs" + patternToQueryString(pattern)
 	log.Printf("Requesting external resource: url=%s", url)
 
@@ -74,13 +78,22 @@ func (j *jobberwockyExternalJobClient) Filter(pattern *domain.Pattern) ([]domain
 		if err := j.Validate(false); err != nil {
 			return nil, err
 		}
-		jobs = append(jobs, j)
+		if pattern == nil || (pattern != nil && domain.AllKeywordsContained(pattern.Keywords, j.Keywords)) {
+			jobs = append(jobs, j)
+		}
 	}
 	return jobs, nil
 }
 
 func (j *jobberwockyExternalJobClient) Name() string {
 	return "JobberwockyExternal"
+}
+
+func (j *jobberwockyExternalJobClient) PatternIsSearchable(pattern *domain.Pattern) bool {
+	if pattern == nil || (pattern != nil && pattern.IsEmpty()) {
+		return true
+	}
+	return pattern.Type == "" && pattern.Company == "" && pattern.IsRemoteFriendly == nil
 }
 
 func patternToQueryString(pattern *domain.Pattern) string {
