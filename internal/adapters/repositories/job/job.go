@@ -65,13 +65,7 @@ func (j *jobRepository) Save(job domain.Job) error {
 }
 
 func (j *jobRepository) SyncSchemas() error {
-	if err := j.db.AutoMigrate(&Job{}); err != nil {
-		return err
-	}
-	if err := j.db.AutoMigrate(&keyword.Keyword{}); err != nil {
-		return err
-	}
-	return nil
+	return j.db.AutoMigrate(&Job{})
 }
 
 func patternToQueryAndParameters(pattern domain.Pattern) (string, map[string]interface{}) {

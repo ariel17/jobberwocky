@@ -17,10 +17,7 @@ func NewKeywordRepository(db *gorm.DB) ports.Repository {
 }
 
 func (k *keywordRepository) SyncSchemas() error {
-	if err := k.db.AutoMigrate(&Keyword{}); err != nil {
-		return err
-	}
-	return nil
+	return k.db.AutoMigrate(&Keyword{})
 }
 
 func ReuseExistingKeywords(db *gorm.DB, oldKeywords []Keyword) (bool, []Keyword, error) {

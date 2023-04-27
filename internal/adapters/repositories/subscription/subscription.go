@@ -54,13 +54,7 @@ func (s *subscriptionRepository) Save(subscription domain.Subscription) error {
 }
 
 func (s *subscriptionRepository) SyncSchemas() error {
-	if err := s.db.AutoMigrate(&Subscription{}); err != nil {
-		return err
-	}
-	if err := s.db.AutoMigrate(&keyword.Keyword{}); err != nil {
-		return err
-	}
-	return nil
+	return s.db.AutoMigrate(&Subscription{})
 }
 
 func jobToQueryAndParameters(job domain.Job) (string, map[string]interface{}) {
