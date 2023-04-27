@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -23,30 +24,6 @@ type Job struct {
 	IsRemoteFriendly *bool    `json:"is_remote_friendly,omitempty"`
 	Keywords         []string `json:"keywords"`
 	Source           string   `json:"source"`
-}
-
-// isSalaryValid checks for correct ranges or fixed values to be correct.
-func (j Job) isSalaryValid() bool {
-	if j.SalaryMin > 0 {
-		return j.SalaryMax > j.SalaryMin
-	}
-	return j.SalaryMax > 0
-}
-
-// isLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
-// that no location is remote-friendly.
-func (j Job) isLocationAndIsRemoteFriendlyValid() bool {
-	if j.Location == "" && j.IsRemoteFriendly != nil {
-		return *j.IsRemoteFriendly == false
-	}
-	return true
-}
-
-func (j Job) isSourceValid(isLocal bool) bool {
-	if isLocal {
-		return j.Source == ""
-	}
-	return j.Source != ""
 }
 
 func (j Job) Validate(isLocal bool) error {
@@ -72,6 +49,30 @@ func (j Job) Validate(isLocal bool) error {
 		return errors.New("source is required")
 	}
 	return nil
+}
+
+// isSalaryValid checks for correct ranges or fixed values to be correct.
+func (j Job) isSalaryValid() bool {
+	if j.SalaryMin > 0 {
+		return j.SalaryMax > j.SalaryMin
+	}
+	return j.SalaryMax > 0
+}
+
+// isLocationAndIsRemoteFriendlyValid checks combination of both fields ensure
+// that no location is remote-friendly.
+func (j Job) isLocationAndIsRemoteFriendlyValid() bool {
+	if j.Location == "" && j.IsRemoteFriendly != nil {
+		return *j.IsRemoteFriendly == false
+	}
+	return true
+}
+
+func (j Job) isSourceValid(isLocal bool) bool {
+	if isLocal {
+		return j.Source == ""
+	}
+	return j.Source != ""
 }
 
 // Pattern contains value patterns to match when searching for matching jobs.
@@ -116,6 +117,22 @@ func (s Subscription) Validate() error {
 		return errors.New("email cannot be empty")
 	}
 	return nil
+}
+
+func AllKeywordsContained(patternKeywords, jobKeywords []string) bool {
+	for _, pk := range patternKeywords {
+		found := false
+		for _, jk := range jobKeywords {
+			if strings.ToLower(pk) == strings.ToLower(jk) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
 
 // isKeywordsValid checks for repeated values in list.

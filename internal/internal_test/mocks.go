@@ -62,23 +62,7 @@ func Matches(pattern domain.Pattern, job domain.Job) bool {
 		(pattern.Type == "" || pattern.Type == job.Type) &&
 		(pattern.IsRemoteFriendly == nil ||
 			(pattern.IsRemoteFriendly != nil && job.IsRemoteFriendly != nil && *pattern.IsRemoteFriendly == *job.IsRemoteFriendly)) &&
-		allKeywordsContained(pattern.Keywords, job.Keywords)
-}
-
-func allKeywordsContained(patternKeywords, jobKeywords []string) bool {
-	for _, pk := range patternKeywords {
-		found := false
-		for _, jk := range jobKeywords {
-			if strings.ToLower(pk) == strings.ToLower(jk) {
-				found = true
-				break
-			}
-		}
-		if !found {
-			return false
-		}
-	}
-	return true
+		domain.AllKeywordsContained(pattern.Keywords, job.Keywords)
 }
 
 // MockSave provides common fields/methods to be used on a Save() method and
