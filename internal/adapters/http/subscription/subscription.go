@@ -29,6 +29,7 @@ func NewSubscriptionHTTPHandler(s ports.SubscriptionService) *subscriptionHTTPHa
 // @Tags         jobs
 // @Accept       json
 // @Produce      json
+// @Param        subscription	body		domain.Subscription	true	"New subscription details."
 // @Success      201  {object}	domain.Subscription
 // @Failure      400  {object}  http.ErrorResponse
 // @Failure      500  {object}  http.ErrorResponse

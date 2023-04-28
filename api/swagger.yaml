@@ -159,6 +159,13 @@ paths:
       - application/json
       description: Receives a JSON body with the email and filter values to match
         new job posts and be notified.
+      parameters:
+      - description: New subscription details.
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Subscription'
       produces:
       - application/json
       responses:

@@ -166,6 +166,17 @@ const docTemplate = `{
                     "jobs"
                 ],
                 "summary": "Creates a new subscripion",
+                "parameters": [
+                    {
+                        "description": "New subscription details.",
+                        "name": "subscription",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Subscription"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
